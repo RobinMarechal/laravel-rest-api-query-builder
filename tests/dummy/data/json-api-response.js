@@ -10,7 +10,7 @@ export const Post = {
             "published_at": "2018-01-25"
         },
         "links": {
-            "self": "https:\/\/sarala-demo.app\/api\/posts\/1"
+            "self": "test://un.it/api/posts/1"
         },
         "meta": {
             "copyright": "Copyright 2018 Example Corp."
@@ -26,7 +26,7 @@ export const Tag = {
             "name": "voluptates"
         },
         "links": {
-            "self": "https:\/\/sarala-demo.app\/api\/tags\/1"
+            "self": "test://un.it/api/tags/1"
         }
     }
 };
@@ -43,13 +43,13 @@ export const PostWithAllNesterRelations = {
             "published_at": "2018-01-25"
         },
         "links": {
-            "self": "https:\/\/sarala-demo.app\/api\/posts\/1"
+            "self": "test://un.it/api/posts/1"
         },
         "relationships": {
             "author": {
                 "links": {
-                    "self": "https:\/\/sarala-demo.app\/api\/posts\/1\/relationships\/author",
-                    "related": "https:\/\/sarala-demo.app\/api\/posts\/1\/author"
+                    "self": "test://un.it/api/posts/1/relationships/author",
+                    "related": "test://un.it/api/posts/1/author"
                 },
                 "data": {
                     "type": "users",
@@ -58,8 +58,8 @@ export const PostWithAllNesterRelations = {
             },
             "tags": {
                 "links": {
-                    "self": "https:\/\/sarala-demo.app\/api\/posts\/1\/relationships\/tags",
-                    "related": "https:\/\/sarala-demo.app\/api\/posts\/1\/tags"
+                    "self": "test://un.it/api/posts/1/relationships/tags",
+                    "related": "test://un.it/api/posts/1/tags"
                 },
                 "data": [
                     {
@@ -74,8 +74,8 @@ export const PostWithAllNesterRelations = {
             },
             "comments": {
                 "links": {
-                    "self": "https:\/\/sarala-demo.app\/api\/posts\/1\/relationships\/comments",
-                    "related": "https:\/\/sarala-demo.app\/api\/posts\/1\/comments"
+                    "self": "test://un.it/api/posts/1/relationships/comments",
+                    "related": "test://un.it/api/posts/1/comments"
                 },
                 "data": [
                     {
@@ -99,7 +99,7 @@ export const PostWithAllNesterRelations = {
                 "email": "reynold11@example.org"
             },
             "links": {
-                "self": "https:\/\/sarala-demo.app\/api\/users\/11"
+                "self": "test://un.it/api/users/11"
             }
         },
         {
@@ -110,7 +110,7 @@ export const PostWithAllNesterRelations = {
                 "email": "manuela76@example.net"
             },
             "links": {
-                "self": "https:\/\/sarala-demo.app\/api\/users\/12"
+                "self": "test://un.it/api/users/12"
             }
         },
         {
@@ -121,7 +121,7 @@ export const PostWithAllNesterRelations = {
                 "email": "margret06@example.com"
             },
             "links": {
-                "self": "https:\/\/sarala-demo.app\/api\/users\/1"
+                "self": "test://un.it/api/users/1"
             }
         },
         {
@@ -131,7 +131,7 @@ export const PostWithAllNesterRelations = {
                 "name": "voluptates"
             },
             "links": {
-                "self": "https:\/\/sarala-demo.app\/api\/tags\/1"
+                "self": "test://un.it/api/tags/1"
             }
         },
         {
@@ -141,7 +141,7 @@ export const PostWithAllNesterRelations = {
                 "name": "dolorum"
             },
             "links": {
-                "self": "https:\/\/sarala-demo.app\/api\/tags\/15"
+                "self": "test://un.it/api/tags/15"
             }
         },
         {
@@ -152,13 +152,13 @@ export const PostWithAllNesterRelations = {
                 "created_at": "2018-02-10"
             },
             "links": {
-                "self": "https:\/\/sarala-demo.app\/api\/comments\/1"
+                "self": "test://un.it/api/comments/1"
             },
             "relationships": {
                 "author": {
                     "links": {
-                        "self": "https:\/\/sarala-demo.app\/api\/comments\/1\/relationships\/author",
-                        "related": "https:\/\/sarala-demo.app\/api\/comments\/1\/author"
+                        "self": "test://un.it/api/comments/1/relationships/author",
+                        "related": "test://un.it/api/comments/1/author"
                     },
                     "data": {
                         "type": "users",
@@ -175,13 +175,13 @@ export const PostWithAllNesterRelations = {
                 "created_at": "2018-02-10"
             },
             "links": {
-                "self": "https:\/\/sarala-demo.app\/api\/comments\/2"
+                "self": "test://un.it/api/comments/2"
             },
             "relationships": {
                 "author": {
                     "links": {
-                        "self": "https:\/\/sarala-demo.app\/api\/comments\/2\/relationships\/author",
-                        "related": "https:\/\/sarala-demo.app\/api\/comments\/2\/author"
+                        "self": "test://un.it/api/comments/2/relationships/author",
+                        "related": "test://un.it/api/comments/2/author"
                     },
                     "data": {
                         "type": "users",
@@ -206,7 +206,7 @@ export const PaginatedPostsList = {
                 "published_at": "2018-01-25"
             },
             "links": {
-                "self": "https:\/\/sarala-demo.app\/api\/posts\/1"
+                "self": "test://un.it/api/posts/1"
             }
         },
         {
@@ -220,7 +220,7 @@ export const PaginatedPostsList = {
                 "published_at": "2018-02-01"
             },
             "links": {
-                "self": "https:\/\/sarala-demo.app\/api\/posts\/2"
+                "self": "test://un.it/api/posts/2"
             }
         },
         {
@@ -234,7 +234,7 @@ export const PaginatedPostsList = {
                 "published_at": "2018-01-17"
             },
             "links": {
-                "self": "https:\/\/sarala-demo.app\/api\/posts\/3"
+                "self": "test://un.it/api/posts/3"
             }
         },
         {
@@ -248,7 +248,7 @@ export const PaginatedPostsList = {
                 "published_at": "2018-02-27"
             },
             "links": {
-                "self": "https:\/\/sarala-demo.app\/api\/posts\/4"
+                "self": "test://un.it/api/posts/4"
             }
         }
     ],
@@ -262,10 +262,10 @@ export const PaginatedPostsList = {
         }
     },
     "links": {
-        "self": "https:\/\/sarala-demo.app\/api\/posts?=1",
-        "first": "https:\/\/sarala-demo.app\/api\/posts?=1",
-        "next": "https:\/\/sarala-demo.app\/api\/posts?=2",
-        "last": "https:\/\/sarala-demo.app\/api\/posts?=3"
+        "self": "test://un.it/api/posts?=1",
+        "first": "test://un.it/api/posts?=1",
+        "next": "test://un.it/api/posts?=2",
+        "last": "test://un.it/api/posts?=3"
     }
 };
 
@@ -282,13 +282,13 @@ export const PaginatedPostsListWithAllNesterRelations = {
                 "published_at": "2018-01-25"
             },
             "links": {
-                "self": "https:\/\/sarala-demo.app\/api\/posts\/1"
+                "self": "test://un.it/api/posts/1"
             },
             "relationships": {
                 "author": {
                     "links": {
-                        "self": "https:\/\/sarala-demo.app\/api\/posts\/1\/relationships\/author",
-                        "related": "https:\/\/sarala-demo.app\/api\/posts\/1\/author"
+                        "self": "test://un.it/api/posts/1/relationships/author",
+                        "related": "test://un.it/api/posts/1/author"
                     },
                     "data": {
                         "type": "users",
@@ -297,8 +297,8 @@ export const PaginatedPostsListWithAllNesterRelations = {
                 },
                 "tags": {
                     "links": {
-                        "self": "https:\/\/sarala-demo.app\/api\/posts\/1\/relationships\/tags",
-                        "related": "https:\/\/sarala-demo.app\/api\/posts\/1\/tags"
+                        "self": "test://un.it/api/posts/1/relationships/tags",
+                        "related": "test://un.it/api/posts/1/tags"
                     },
                     "data": [
                         {
@@ -313,8 +313,8 @@ export const PaginatedPostsListWithAllNesterRelations = {
                 },
                 "comments": {
                     "links": {
-                        "self": "https:\/\/sarala-demo.app\/api\/posts\/1\/relationships\/comments",
-                        "related": "https:\/\/sarala-demo.app\/api\/posts\/1\/comments"
+                        "self": "test://un.it/api/posts/1/relationships/comments",
+                        "related": "test://un.it/api/posts/1/comments"
                     },
                     "data": [
                         {
@@ -340,13 +340,13 @@ export const PaginatedPostsListWithAllNesterRelations = {
                 "published_at": "2018-02-01"
             },
             "links": {
-                "self": "https:\/\/sarala-demo.app\/api\/posts\/2"
+                "self": "test://un.it/api/posts/2"
             },
             "relationships": {
                 "author": {
                     "links": {
-                        "self": "https:\/\/sarala-demo.app\/api\/posts\/2\/relationships\/author",
-                        "related": "https:\/\/sarala-demo.app\/api\/posts\/2\/author"
+                        "self": "test://un.it/api/posts/2/relationships/author",
+                        "related": "test://un.it/api/posts/2/author"
                     },
                     "data": {
                         "type": "users",
@@ -355,8 +355,8 @@ export const PaginatedPostsListWithAllNesterRelations = {
                 },
                 "tags": {
                     "links": {
-                        "self": "https:\/\/sarala-demo.app\/api\/posts\/2\/relationships\/tags",
-                        "related": "https:\/\/sarala-demo.app\/api\/posts\/2\/tags"
+                        "self": "test://un.it/api/posts/2/relationships/tags",
+                        "related": "test://un.it/api/posts/2/tags"
                     },
                     "data": [
                         {
@@ -375,8 +375,8 @@ export const PaginatedPostsListWithAllNesterRelations = {
                 },
                 "comments": {
                     "links": {
-                        "self": "https:\/\/sarala-demo.app\/api\/posts\/2\/relationships\/comments",
-                        "related": "https:\/\/sarala-demo.app\/api\/posts\/2\/comments"
+                        "self": "test://un.it/api/posts/2/relationships/comments",
+                        "related": "test://un.it/api/posts/2/comments"
                     },
                     "data": [
                         {
@@ -398,13 +398,13 @@ export const PaginatedPostsListWithAllNesterRelations = {
                 "published_at": "2018-01-17"
             },
             "links": {
-                "self": "https:\/\/sarala-demo.app\/api\/posts\/3"
+                "self": "test://un.it/api/posts/3"
             },
             "relationships": {
                 "author": {
                     "links": {
-                        "self": "https:\/\/sarala-demo.app\/api\/posts\/3\/relationships\/author",
-                        "related": "https:\/\/sarala-demo.app\/api\/posts\/3\/author"
+                        "self": "test://un.it/api/posts/3/relationships/author",
+                        "related": "test://un.it/api/posts/3/author"
                     },
                     "data": {
                         "type": "users",
@@ -413,8 +413,8 @@ export const PaginatedPostsListWithAllNesterRelations = {
                 },
                 "tags": {
                     "links": {
-                        "self": "https:\/\/sarala-demo.app\/api\/posts\/3\/relationships\/tags",
-                        "related": "https:\/\/sarala-demo.app\/api\/posts\/3\/tags"
+                        "self": "test://un.it/api/posts/3/relationships/tags",
+                        "related": "test://un.it/api/posts/3/tags"
                     },
                     "data": [
                         {
@@ -437,8 +437,8 @@ export const PaginatedPostsListWithAllNesterRelations = {
                 },
                 "comments": {
                     "links": {
-                        "self": "https:\/\/sarala-demo.app\/api\/posts\/3\/relationships\/comments",
-                        "related": "https:\/\/sarala-demo.app\/api\/posts\/3\/comments"
+                        "self": "test://un.it/api/posts/3/relationships/comments",
+                        "related": "test://un.it/api/posts/3/comments"
                     },
                     "data": [
                         {
@@ -476,13 +476,13 @@ export const PaginatedPostsListWithAllNesterRelations = {
                 "published_at": "2018-02-27"
             },
             "links": {
-                "self": "https:\/\/sarala-demo.app\/api\/posts\/4"
+                "self": "test://un.it/api/posts/4"
             },
             "relationships": {
                 "author": {
                     "links": {
-                        "self": "https:\/\/sarala-demo.app\/api\/posts\/4\/relationships\/author",
-                        "related": "https:\/\/sarala-demo.app\/api\/posts\/4\/author"
+                        "self": "test://un.it/api/posts/4/relationships/author",
+                        "related": "test://un.it/api/posts/4/author"
                     },
                     "data": {
                         "type": "users",
@@ -491,8 +491,8 @@ export const PaginatedPostsListWithAllNesterRelations = {
                 },
                 "tags": {
                     "links": {
-                        "self": "https:\/\/sarala-demo.app\/api\/posts\/4\/relationships\/tags",
-                        "related": "https:\/\/sarala-demo.app\/api\/posts\/4\/tags"
+                        "self": "test://un.it/api/posts/4/relationships/tags",
+                        "related": "test://un.it/api/posts/4/tags"
                     },
                     "data": [
                         {
@@ -503,8 +503,8 @@ export const PaginatedPostsListWithAllNesterRelations = {
                 },
                 "comments": {
                     "links": {
-                        "self": "https:\/\/sarala-demo.app\/api\/posts\/4\/relationships\/comments",
-                        "related": "https:\/\/sarala-demo.app\/api\/posts\/4\/comments"
+                        "self": "test://un.it/api/posts/4/relationships/comments",
+                        "related": "test://un.it/api/posts/4/comments"
                     },
                     "data": [
                         {
@@ -537,7 +537,7 @@ export const PaginatedPostsListWithAllNesterRelations = {
                 "email": "reynold11@example.org"
             },
             "links": {
-                "self": "https:\/\/sarala-demo.app\/api\/users\/11"
+                "self": "test://un.it/api/users/11"
             }
         },
         {
@@ -548,7 +548,7 @@ export const PaginatedPostsListWithAllNesterRelations = {
                 "email": "manuela76@example.net"
             },
             "links": {
-                "self": "https:\/\/sarala-demo.app\/api\/users\/12"
+                "self": "test://un.it/api/users/12"
             }
         },
         {
@@ -559,7 +559,7 @@ export const PaginatedPostsListWithAllNesterRelations = {
                 "email": "cassandra41@example.com"
             },
             "links": {
-                "self": "https:\/\/sarala-demo.app\/api\/users\/13"
+                "self": "test://un.it/api/users/13"
             }
         },
         {
@@ -570,7 +570,7 @@ export const PaginatedPostsListWithAllNesterRelations = {
                 "email": "dnikolaus@example.org"
             },
             "links": {
-                "self": "https:\/\/sarala-demo.app\/api\/users\/14"
+                "self": "test://un.it/api/users/14"
             }
         },
         {
@@ -581,7 +581,7 @@ export const PaginatedPostsListWithAllNesterRelations = {
                 "email": "kuvalis.neva@example.net"
             },
             "links": {
-                "self": "https:\/\/sarala-demo.app\/api\/users\/15"
+                "self": "test://un.it/api/users/15"
             }
         },
         {
@@ -592,7 +592,7 @@ export const PaginatedPostsListWithAllNesterRelations = {
                 "email": "lgreen@example.net"
             },
             "links": {
-                "self": "https:\/\/sarala-demo.app\/api\/users\/16"
+                "self": "test://un.it/api/users/16"
             }
         },
         {
@@ -603,7 +603,7 @@ export const PaginatedPostsListWithAllNesterRelations = {
                 "email": "ubaldo.bayer@example.org"
             },
             "links": {
-                "self": "https:\/\/sarala-demo.app\/api\/users\/17"
+                "self": "test://un.it/api/users/17"
             }
         },
         {
@@ -614,7 +614,7 @@ export const PaginatedPostsListWithAllNesterRelations = {
                 "email": "dbailey@example.com"
             },
             "links": {
-                "self": "https:\/\/sarala-demo.app\/api\/users\/18"
+                "self": "test://un.it/api/users/18"
             }
         },
         {
@@ -625,7 +625,7 @@ export const PaginatedPostsListWithAllNesterRelations = {
                 "email": "doyle.greta@example.com"
             },
             "links": {
-                "self": "https:\/\/sarala-demo.app\/api\/users\/19"
+                "self": "test://un.it/api/users/19"
             }
         },
         {
@@ -636,7 +636,7 @@ export const PaginatedPostsListWithAllNesterRelations = {
                 "email": "llowe@example.net"
             },
             "links": {
-                "self": "https:\/\/sarala-demo.app\/api\/users\/20"
+                "self": "test://un.it/api/users/20"
             }
         },
         {
@@ -647,7 +647,7 @@ export const PaginatedPostsListWithAllNesterRelations = {
                 "email": "penelope.halvorson@example.net"
             },
             "links": {
-                "self": "https:\/\/sarala-demo.app\/api\/users\/21"
+                "self": "test://un.it/api/users/21"
             }
         },
         {
@@ -658,7 +658,7 @@ export const PaginatedPostsListWithAllNesterRelations = {
                 "email": "wuckert.lucious@example.net"
             },
             "links": {
-                "self": "https:\/\/sarala-demo.app\/api\/users\/22"
+                "self": "test://un.it/api/users/22"
             }
         },
         {
@@ -669,7 +669,7 @@ export const PaginatedPostsListWithAllNesterRelations = {
                 "email": "margret06@example.com"
             },
             "links": {
-                "self": "https:\/\/sarala-demo.app\/api\/users\/1"
+                "self": "test://un.it/api/users/1"
             }
         },
         {
@@ -679,7 +679,7 @@ export const PaginatedPostsListWithAllNesterRelations = {
                 "name": "voluptates"
             },
             "links": {
-                "self": "https:\/\/sarala-demo.app\/api\/tags\/1"
+                "self": "test://un.it/api/tags/1"
             }
         },
         {
@@ -689,7 +689,7 @@ export const PaginatedPostsListWithAllNesterRelations = {
                 "name": "dolorum"
             },
             "links": {
-                "self": "https:\/\/sarala-demo.app\/api\/tags\/15"
+                "self": "test://un.it/api/tags/15"
             }
         },
         {
@@ -700,13 +700,13 @@ export const PaginatedPostsListWithAllNesterRelations = {
                 "created_at": "2018-02-10"
             },
             "links": {
-                "self": "https:\/\/sarala-demo.app\/api\/comments\/1"
+                "self": "test://un.it/api/comments/1"
             },
             "relationships": {
                 "author": {
                     "links": {
-                        "self": "https:\/\/sarala-demo.app\/api\/comments\/1\/relationships\/author",
-                        "related": "https:\/\/sarala-demo.app\/api\/comments\/1\/author"
+                        "self": "test://un.it/api/comments/1/relationships/author",
+                        "related": "test://un.it/api/comments/1/author"
                     },
                     "data": {
                         "type": "users",
@@ -723,13 +723,13 @@ export const PaginatedPostsListWithAllNesterRelations = {
                 "created_at": "2018-02-10"
             },
             "links": {
-                "self": "https:\/\/sarala-demo.app\/api\/comments\/2"
+                "self": "test://un.it/api/comments/2"
             },
             "relationships": {
                 "author": {
                     "links": {
-                        "self": "https:\/\/sarala-demo.app\/api\/comments\/2\/relationships\/author",
-                        "related": "https:\/\/sarala-demo.app\/api\/comments\/2\/author"
+                        "self": "test://un.it/api/comments/2/relationships/author",
+                        "related": "test://un.it/api/comments/2/author"
                     },
                     "data": {
                         "type": "users",
@@ -746,7 +746,7 @@ export const PaginatedPostsListWithAllNesterRelations = {
                 "email": "randi.klein@example.com"
             },
             "links": {
-                "self": "https:\/\/sarala-demo.app\/api\/users\/2"
+                "self": "test://un.it/api/users/2"
             }
         },
         {
@@ -756,7 +756,7 @@ export const PaginatedPostsListWithAllNesterRelations = {
                 "name": "et"
             },
             "links": {
-                "self": "https:\/\/sarala-demo.app\/api\/tags\/6"
+                "self": "test://un.it/api/tags/6"
             }
         },
         {
@@ -766,7 +766,7 @@ export const PaginatedPostsListWithAllNesterRelations = {
                 "name": "sit"
             },
             "links": {
-                "self": "https:\/\/sarala-demo.app\/api\/tags\/17"
+                "self": "test://un.it/api/tags/17"
             }
         },
         {
@@ -777,13 +777,13 @@ export const PaginatedPostsListWithAllNesterRelations = {
                 "created_at": "2018-02-10"
             },
             "links": {
-                "self": "https:\/\/sarala-demo.app\/api\/comments\/3"
+                "self": "test://un.it/api/comments/3"
             },
             "relationships": {
                 "author": {
                     "links": {
-                        "self": "https:\/\/sarala-demo.app\/api\/comments\/3\/relationships\/author",
-                        "related": "https:\/\/sarala-demo.app\/api\/comments\/3\/author"
+                        "self": "test://un.it/api/comments/3/relationships/author",
+                        "related": "test://un.it/api/comments/3/author"
                     },
                     "data": {
                         "type": "users",
@@ -800,7 +800,7 @@ export const PaginatedPostsListWithAllNesterRelations = {
                 "email": "art10@example.com"
             },
             "links": {
-                "self": "https:\/\/sarala-demo.app\/api\/users\/3"
+                "self": "test://un.it/api/users/3"
             }
         },
         {
@@ -810,7 +810,7 @@ export const PaginatedPostsListWithAllNesterRelations = {
                 "name": "blanditiis"
             },
             "links": {
-                "self": "https:\/\/sarala-demo.app\/api\/tags\/11"
+                "self": "test://un.it/api/tags/11"
             }
         },
         {
@@ -820,7 +820,7 @@ export const PaginatedPostsListWithAllNesterRelations = {
                 "name": "esse"
             },
             "links": {
-                "self": "https:\/\/sarala-demo.app\/api\/tags\/12"
+                "self": "test://un.it/api/tags/12"
             }
         },
         {
@@ -830,7 +830,7 @@ export const PaginatedPostsListWithAllNesterRelations = {
                 "name": "eum"
             },
             "links": {
-                "self": "https:\/\/sarala-demo.app\/api\/tags\/18"
+                "self": "test://un.it/api/tags/18"
             }
         },
         {
@@ -841,13 +841,13 @@ export const PaginatedPostsListWithAllNesterRelations = {
                 "created_at": "2018-02-10"
             },
             "links": {
-                "self": "https:\/\/sarala-demo.app\/api\/comments\/4"
+                "self": "test://un.it/api/comments/4"
             },
             "relationships": {
                 "author": {
                     "links": {
-                        "self": "https:\/\/sarala-demo.app\/api\/comments\/4\/relationships\/author",
-                        "related": "https:\/\/sarala-demo.app\/api\/comments\/4\/author"
+                        "self": "test://un.it/api/comments/4/relationships/author",
+                        "related": "test://un.it/api/comments/4/author"
                     },
                     "data": {
                         "type": "users",
@@ -864,13 +864,13 @@ export const PaginatedPostsListWithAllNesterRelations = {
                 "created_at": "2018-02-10"
             },
             "links": {
-                "self": "https:\/\/sarala-demo.app\/api\/comments\/5"
+                "self": "test://un.it/api/comments/5"
             },
             "relationships": {
                 "author": {
                     "links": {
-                        "self": "https:\/\/sarala-demo.app\/api\/comments\/5\/relationships\/author",
-                        "related": "https:\/\/sarala-demo.app\/api\/comments\/5\/author"
+                        "self": "test://un.it/api/comments/5/relationships/author",
+                        "related": "test://un.it/api/comments/5/author"
                     },
                     "data": {
                         "type": "users",
@@ -887,13 +887,13 @@ export const PaginatedPostsListWithAllNesterRelations = {
                 "created_at": "2018-02-10"
             },
             "links": {
-                "self": "https:\/\/sarala-demo.app\/api\/comments\/6"
+                "self": "test://un.it/api/comments/6"
             },
             "relationships": {
                 "author": {
                     "links": {
-                        "self": "https:\/\/sarala-demo.app\/api\/comments\/6\/relationships\/author",
-                        "related": "https:\/\/sarala-demo.app\/api\/comments\/6\/author"
+                        "self": "test://un.it/api/comments/6/relationships/author",
+                        "related": "test://un.it/api/comments/6/author"
                     },
                     "data": {
                         "type": "users",
@@ -910,13 +910,13 @@ export const PaginatedPostsListWithAllNesterRelations = {
                 "created_at": "2018-02-10"
             },
             "links": {
-                "self": "https:\/\/sarala-demo.app\/api\/comments\/7"
+                "self": "test://un.it/api/comments/7"
             },
             "relationships": {
                 "author": {
                     "links": {
-                        "self": "https:\/\/sarala-demo.app\/api\/comments\/7\/relationships\/author",
-                        "related": "https:\/\/sarala-demo.app\/api\/comments\/7\/author"
+                        "self": "test://un.it/api/comments/7/relationships/author",
+                        "related": "test://un.it/api/comments/7/author"
                     },
                     "data": {
                         "type": "users",
@@ -933,13 +933,13 @@ export const PaginatedPostsListWithAllNesterRelations = {
                 "created_at": "2018-02-10"
             },
             "links": {
-                "self": "https:\/\/sarala-demo.app\/api\/comments\/8"
+                "self": "test://un.it/api/comments/8"
             },
             "relationships": {
                 "author": {
                     "links": {
-                        "self": "https:\/\/sarala-demo.app\/api\/comments\/8\/relationships\/author",
-                        "related": "https:\/\/sarala-demo.app\/api\/comments\/8\/author"
+                        "self": "test://un.it/api/comments/8/relationships/author",
+                        "related": "test://un.it/api/comments/8/author"
                     },
                     "data": {
                         "type": "users",
@@ -956,7 +956,7 @@ export const PaginatedPostsListWithAllNesterRelations = {
                 "email": "heber94@example.org"
             },
             "links": {
-                "self": "https:\/\/sarala-demo.app\/api\/users\/4"
+                "self": "test://un.it/api/users/4"
             }
         },
         {
@@ -966,7 +966,7 @@ export const PaginatedPostsListWithAllNesterRelations = {
                 "name": "rerum"
             },
             "links": {
-                "self": "https:\/\/sarala-demo.app\/api\/tags\/16"
+                "self": "test://un.it/api/tags/16"
             }
         },
         {
@@ -977,13 +977,13 @@ export const PaginatedPostsListWithAllNesterRelations = {
                 "created_at": "2018-02-10"
             },
             "links": {
-                "self": "https:\/\/sarala-demo.app\/api\/comments\/9"
+                "self": "test://un.it/api/comments/9"
             },
             "relationships": {
                 "author": {
                     "links": {
-                        "self": "https:\/\/sarala-demo.app\/api\/comments\/9\/relationships\/author",
-                        "related": "https:\/\/sarala-demo.app\/api\/comments\/9\/author"
+                        "self": "test://un.it/api/comments/9/relationships/author",
+                        "related": "test://un.it/api/comments/9/author"
                     },
                     "data": {
                         "type": "users",
@@ -1000,13 +1000,13 @@ export const PaginatedPostsListWithAllNesterRelations = {
                 "created_at": "2018-02-10"
             },
             "links": {
-                "self": "https:\/\/sarala-demo.app\/api\/comments\/10"
+                "self": "test://un.it/api/comments/10"
             },
             "relationships": {
                 "author": {
                     "links": {
-                        "self": "https:\/\/sarala-demo.app\/api\/comments\/10\/relationships\/author",
-                        "related": "https:\/\/sarala-demo.app\/api\/comments\/10\/author"
+                        "self": "test://un.it/api/comments/10/relationships/author",
+                        "related": "test://un.it/api/comments/10/author"
                     },
                     "data": {
                         "type": "users",
@@ -1023,13 +1023,13 @@ export const PaginatedPostsListWithAllNesterRelations = {
                 "created_at": "2018-02-10"
             },
             "links": {
-                "self": "https:\/\/sarala-demo.app\/api\/comments\/11"
+                "self": "test://un.it/api/comments/11"
             },
             "relationships": {
                 "author": {
                     "links": {
-                        "self": "https:\/\/sarala-demo.app\/api\/comments\/11\/relationships\/author",
-                        "related": "https:\/\/sarala-demo.app\/api\/comments\/11\/author"
+                        "self": "test://un.it/api/comments/11/relationships/author",
+                        "related": "test://un.it/api/comments/11/author"
                     },
                     "data": {
                         "type": "users",
@@ -1046,13 +1046,13 @@ export const PaginatedPostsListWithAllNesterRelations = {
                 "created_at": "2018-02-10"
             },
             "links": {
-                "self": "https:\/\/sarala-demo.app\/api\/comments\/12"
+                "self": "test://un.it/api/comments/12"
             },
             "relationships": {
                 "author": {
                     "links": {
-                        "self": "https:\/\/sarala-demo.app\/api\/comments\/12\/relationships\/author",
-                        "related": "https:\/\/sarala-demo.app\/api\/comments\/12\/author"
+                        "self": "test://un.it/api/comments/12/relationships/author",
+                        "related": "test://un.it/api/comments/12/author"
                     },
                     "data": {
                         "type": "users",
@@ -1072,9 +1072,9 @@ export const PaginatedPostsListWithAllNesterRelations = {
         }
     },
     "links": {
-        "self": "https:\/\/sarala-demo.app\/api\/posts?=1",
-        "first": "https:\/\/sarala-demo.app\/api\/posts?=1",
-        "next": "https:\/\/sarala-demo.app\/api\/posts?=2",
-        "last": "https:\/\/sarala-demo.app\/api\/posts?=3"
+        "self": "test://un.it/api/posts?=1",
+        "first": "test://un.it/api/posts?=1",
+        "next": "test://un.it/api/posts?=2",
+        "last": "test://un.it/api/posts?=3"
     }
 };

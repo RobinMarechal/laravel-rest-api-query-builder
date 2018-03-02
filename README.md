@@ -1,19 +1,24 @@
-# sarala
+# laravel-rest-api-query-builder
 
 [![codecov](https://codecov.io/gh/milroyfraser/sarala/branch/master/graph/badge.svg)](https://codecov.io/gh/milroyfraser/sarala) [![npm version](https://badge.fury.io/js/sarala.svg)](https://www.npmjs.com/package/sarala) [![apm](https://img.shields.io/apm/l/vim-mode.svg)](https://github.com/milroyfraser/sarala/blob/master/LICENSE)
 
-> Javascript library to communicate with RESTful API built following JSON API specification. inspired by Laravel’s Eloquent
+> JavaScript library to build RESTful API HTTP calls with Eloquent's-like syntax. 
+> This is made to work with RESTful APIs that use laravel-rest-api package. 
 
-### [Documentation](https://milroy.me/posts/sarala-laravel-eloquent-like-javascript-orm-to-communicate-with-json-api/1)
+This package is just a modification to [milroyfraser/sarala](http://github.com/milroyfraser/sarala) in order to make it compatible with [laravel-rest-api](http://github.com/RobinMarechal/laravel-rest-api) package.
+
+All credits goes to [milroyfraser](http://github.com/milroyfraser).
+
+### [Original package's documentation](https://milroy.me/posts/sarala-laravel-eloquent-like-javascript-orm-to-communicate-with-json-api/1)
 
 ## Install
 
 ```sh
-$ npm i sarala --save
+$ npm i laravel-rest-api-query-builder --save
 ```
 
 ```sh
-$ yarn add sarala
+$ yarn add laravel-rest-api-query-builder
 ```
 
 # Basic Usage
@@ -22,15 +27,11 @@ $ yarn add sarala
 
 ##### app/models/BaseModel.js
 ```javascript
-import { Model } from 'sarala';
+import { Model } from 'laravel-rest-api-query-builder';
 import axios from 'axios';
 
 export default class BaseModel extends Model
 {
-    baseUrl () {
-        return 'https://sarala-demo.app/api';
-    }
-
     request (config) {
         return axios.request(config);
     }
@@ -131,4 +132,4 @@ tag.save();
 // or you can directly call tag.create();
 ```
 
-## Learn More: [Documentation](https://milroy.me/posts/sarala-laravel-eloquent-like-javascript-orm-to-communicate-with-json-api/1)
+## Learn More: [Original package's documentation](https://milroy.me/posts/sarala-laravel-eloquent-like-javascript-orm-to-communicate-with-json-api/1)

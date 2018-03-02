@@ -1,7 +1,6 @@
 {
-  "name": "sarala",
-  "version": "0.2.0",
-  "description": "Javascript library to communicate with RESTful API built following JSON API specification. inspired by Laravel’s Eloquent.",
+  "name": "laravel-rest-api-query-builder",
+  "description": "JavaScript library to build RESTful API HTTP calls. This is made to work with RESTful APIs that use laravel-rest-api package. Inspired by Eloquent's Syntax. All credits goes to milroyfraser for his package milroyfraser/sarala.",
   "main": "build/index.js",
   "scripts": {
     "build": "babel src -d build",
@@ -17,22 +16,23 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/milroyfraser/sarala.git"
+    "url": "git+https://github.com/RobinMarechal/laravel-rest-api-query-builder.git"
   },
   "keywords": [
     "restful-api",
     "json-api",
     "laravel",
+    "laravel-rest-api",
     "eloquent",
     "javascript",
     "orm"
   ],
-  "author": "Milroy Fraser",
+  "author": "Robin Marechal",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/milroyfraser/sarala/issues"
+    "url": "https://github.com/robinmarechal/laravel-rest-api-query-builder/issues"
   },
-  "homepage": "https://github.com/milroyfraser/sarala#readme",
+  "homepage": "https://github.com/robinmarechal/laravel-rest-api-query-builder#readme",
   "dependencies": {
     "lodash": "^4.17.5",
     "moment": "^2.20.1",

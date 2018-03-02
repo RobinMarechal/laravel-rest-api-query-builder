@@ -1,4 +1,7 @@
 import Post from './dummy/models/Post';
+import {config} from '../src/config';
+
+config.base_url = 'test://un.it/api';
 
 describe('query builder', () => {
     test('all', async () => {
@@ -8,7 +11,7 @@ describe('query builder', () => {
 
         expect(post.testApiRequest).toEqual({
             method: 'GET',
-            url: 'https://sarala-demo.app/api/posts/'
+            url: config.base_url + '/posts/',
         });
     });
 
@@ -19,29 +22,29 @@ describe('query builder', () => {
 
         expect(post.testApiRequest).toEqual({
             method: 'GET',
-            url: 'https://sarala-demo.app/api/posts/1'
+            url: config.base_url + '/posts/1',
         });
     });
 
     test('with', async () => {
         const post = new Post();
         post.testApiResponse = {};
-        await post.with(['tags', 'author', 'comments.author']).find(1);
+        await post.with('tags', 'author', 'comments.author').find(1);
 
         expect(post.testApiRequest).toEqual({
             method: 'GET',
-            url: 'https://sarala-demo.app/api/posts/1?include=tags,author,comments.author'
+            url: config.base_url + '/posts/1?with=tags,author,comments.author',
         });
     });
 
     test('paginate', async () => {
         const post = new Post();
         post.testApiResponse = {};
-        await post.paginate(4, 1);
+        await post.paginate(10, 4);
 
         expect(post.testApiRequest).toEqual({
             method: 'GET',
-            url: 'https://sarala-demo.app/api/posts/?page[size]=4&page[number]=1'
+            url: config.base_url + '/posts/?limit=10&offset=30',
         });
     });
 
@@ -53,7 +56,7 @@ describe('query builder', () => {
 
             expect(post.testApiRequest).toEqual({
                 method: 'GET',
-                url: 'https://sarala-demo.app/api/posts/?sort=published_at'
+                url: config.base_url + '/posts/?orderby=published_at',
             });
         });
 
@@ -64,28 +67,28 @@ describe('query builder', () => {
 
             expect(post.testApiRequest).toEqual({
                 method: 'GET',
-                url: 'https://sarala-demo.app/api/posts/?sort=-published_at'
+                url: config.base_url + '/posts/?orderby=-published_at',
             });
         });
 
-        test('chain sort methods', async () => {
+        test('chain sorts methods', async () => {
             const post = new Post();
             post.testApiResponse = {};
             await post.orderBy('author.name').orderByDesc('published_at').all();
 
             expect(post.testApiRequest).toEqual({
                 method: 'GET',
-                url: 'https://sarala-demo.app/api/posts/?sort=author.name,-published_at'
+                url: config.base_url + '/posts/?orderby=author.name,-published_at',
             });
         });
 
-        test('it throws error for invalid sort directions', () => {
+        test('it throws error for invalid sorts directions', () => {
             const doDumb = () => {
                 const post = new Post();
                 post.orderBy('author.name', 'crap');
             };
 
-            expect(doDumb).toThrow('Sarale: Invalid sort direction: "crap". Allowed only "asc" or "desc".');
+            expect(doDumb).toThrow(`Sarale: Invalid sort direction: "crap". Allowed only "asc" or "desc" (case insensitive).`);
         });
     });
 
@@ -93,71 +96,48 @@ describe('query builder', () => {
         test('model fields as an array', async () => {
             const post = new Post();
             post.testApiResponse = {};
-            await post.select(['title', 'subtitle']).all();
+            await post.select('title', 'subtitle').all();
 
             expect(post.testApiRequest).toEqual({
                 method: 'GET',
-                url: 'https://sarala-demo.app/api/posts/?fields[posts]=title,subtitle'
+                url: config.base_url + '/posts/?select=title,subtitle',
             });
         });
 
         test('relationships fields as an object', async () => {
             const post = new Post();
             post.testApiResponse = {};
-            await post.select({
-                posts: ['title', 'subtitle'],
-                tags: ['name']
-            }).all();
+            await post.select('title', 'subtitle', 'tags.name').all();
 
             expect(post.testApiRequest).toEqual({
                 method: 'GET',
-                url: 'https://sarala-demo.app/api/posts/?fields[posts]=title,subtitle&fields[tags]=name'
+                url: config.base_url + '/posts/?select=title,subtitle,tags.name',
             });
-        });
-
-        test('it throws error for invalid fields', () => {
-            const doDumb = () => {
-                const post = new Post();
-                post.select('crap');
-            };
-
-            expect(doDumb).toThrow('Sarala: Invalid fields list.');
         });
     });
 
     describe('filtering', () => {
-        test('filter', async () => {
-            const post = new Post();
-            post.testApiResponse = {};
-            await post.filter('archived').all();
-
-            expect(post.testApiRequest).toEqual({
-                method: 'GET',
-                url: 'https://sarala-demo.app/api/posts/?filter[archived]'
-            });
-        });
-
-        test('where', async () => {
+        test('where no operator', async () => {
             const post = new Post();
             post.testApiResponse = {};
             await post.where('published-before', '2018-01-01').all();
 
             expect(post.testApiRequest).toEqual({
                 method: 'GET',
-                url: 'https://sarala-demo.app/api/posts/?filter[published-before]=2018-01-01'
+                url: config.base_url + '/posts/?where[]=published-before,=,2018-01-01',
             });
         });
 
-        test('where group', async () => {
+        test('where operator', async () => {
             const post = new Post();
             post.testApiResponse = {};
-            await post.where('published-before', '2018-01-01', 'unicorn')
-                .where('likes-above', 100, 'unicorn')
+            await post.where('published-before', 'LIKE', '2018-01-%')
+                .where('likes-above', '>', 100)
                 .all();
 
             expect(post.testApiRequest).toEqual({
                 method: 'GET',
-                url: 'https://sarala-demo.app/api/posts/?filter[unicorn][published-before]=2018-01-01&filter[unicorn][likes-above]=100'
+                url: config.base_url + '/posts/?where[]=published-before,LIKE,2018-01-%&where[]=likes-above,>,100',
             });
         });
     });
@@ -165,11 +145,11 @@ describe('query builder', () => {
     test('chain filters with paginate', async () => {
         const post = new Post();
         post.testApiResponse = {};
-        await post.with(['tags', 'author', 'comments.author']).paginate(4, 1);
+        await post.with('tags', 'author', 'comments.author').paginate(10, 4);
 
         expect(post.testApiRequest).toEqual({
             method: 'GET',
-            url: 'https://sarala-demo.app/api/posts/?include=tags,author,comments.author&page[size]=4&page[number]=1'
+            url: config.base_url + '/posts/?with=tags,author,comments.author&limit=10&offset=30',
         });
     });
 });

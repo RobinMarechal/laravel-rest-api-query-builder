@@ -1,12 +1,13 @@
 import _ from 'lodash';
 import moment from 'moment';
-import { Formatter } from 'sarala-json-api-data-formatter';
+import {Formatter} from 'sarala-json-api-data-formatter';
 import QueryBuilder from './QueryBuilder';
+import {config} from './config';
 
 const formatter = new Formatter();
 
 export default class Model {
-    constructor () {
+    constructor() {
         this.queryBuilder = new QueryBuilder();
         this.selfValidate();
         this.type = this.resourceName();
@@ -14,66 +15,70 @@ export default class Model {
 
     // override
 
-    fields () {
+    fields() {
         return [];
     }
 
-    dates () {
+    dates() {
         return [];
     }
 
-    relationships () {
+    relationships() {
         return {};
     }
 
-    computed () {
+    computed() {
         return {};
     }
 
-    resourceName () {
+    resourceName() {
         return null;
     }
 
-    dateFormat () {
+    dateFormat() {
         return 'YYYY-MM-DD HH:mm';
     }
 
-    async request (config) {
+    baseUrl() {
+        return config.base_url;
+    }
+
+    async request(config) {
         // to be implemented in base model
     }
 
     // requests
 
-    async find (id) {
+    async find(id) {
         let response = await this.request({
             url: `${this.resourceUrl()}${id}${this.queryBuilder.getQuery()}`,
-            method: 'GET'
+            method: config.http_methods.get,
         });
 
         return this.respond(response.data);
     }
 
-    async all () {
+    async all() {
         let response = await this.request({
             url: `${this.resourceUrl()}${this.queryBuilder.getQuery()}`,
-            method: 'GET'
+            method: config.http_methods.get,
         });
 
         return this.respond(response.data);
     }
 
-    async paginate (perPage = 10, page = 1) {
+    async paginate(perPage = 10, page = 1) {
         this.queryBuilder.paginate(perPage, page);
 
         let response = await this.request({
             url: `${this.resourceUrl()}${this.queryBuilder.getQuery()}`,
-            method: 'GET'
+            method: config.http_methods.get,
         });
 
         return this.respond(response.data);
     }
 
-    async save () {
+    async save() {
         if (this.hasOwnProperty('id')) {
             return this.update();
         }
@@ -81,66 +86,66 @@ export default class Model {
         return this.create();
     }
 
-    async create () {
+    async create() {
         let response = await this.request({
             url: this.resourceUrl(),
-            method: 'POST',
-            data: this.serialize(this.data())
+            method: config.http_methods.create,
+            data: this.serialize(this.data()),
         });
 
         return this.respond(response.data);
     }
 
-    async update () {
+    async update() {
         let response = await this.request({
             url: this.links.self,
-            method: 'PUT',
-            data: this.serialize(this.data())
+            method: config.http_methods.update,
+            data: this.serialize(this.data()),
         });
 
         return this.respond(response.data);
     }
 
-    async delete () {
+    async delete() {
         let response = this.request({
             url: this.links.self,
-            method: 'DELETE'
+            method: config.http_methods.delete,
         });
 
         return this.respond(response.data);
     }
 
-    async attach (model, data = null) {
-        let config = {
+    async attach(model, data = null) {
+        let queryConfig = {
             url: `${this.links.self}/${model.type}/${model.id}`,
-            method: 'POST'
+            method: config.http_methods.create,
         };
 
         if (data) {
-            config.data = data;
+            queryConfig.data = data;
         }
 
-        let response = await this.request(config);
+        let response = await this.request(queryConfig);
 
         return this.respond(response.data);
     }
 
-    async detach (model) {
+    async detach(model) {
         let response = await this.request({
             url: `${this.links.self}/${model.type}/${model.id}`,
-            method: 'DELETE'
+            method: config.http_methods.delete,
         });
 
         return this.respond(response.data);
     }
 
-    async sync (relationship) {
+    async sync(relationship) {
         const data = this.serialize(this.data());
 
         let respond = await this.request({
             url: `${this.links.self}/${relationship}`,
-            method: 'PUT',
-            data: data.data.relationships[relationship]
+            method: config.http_methods.update,
+            data: data.data.relationships[relationship],
         });
 
         return this.respond(respond.data);
@@ -148,48 +153,68 @@ export default class Model {
 
     // modify query string
 
-    with (resourceName) {
-        this.queryBuilder.include(resourceName);
+    with(...resourceName) {
+        this.queryBuilder.include(...resourceName);
 
         return this;
     }
 
-    orderBy (column, direction = 'asc') {
+    orderBy(column, direction = 'asc') {
         this.queryBuilder.orderBy(column, direction);
 
         return this;
     }
 
-    orderByDesc (column) {
-        return this.orderBy(column, 'desc');
-    }
-
-    where (key, value = null, group = null) {
-        this.queryBuilder.where(key, value, group);
+    limit(limit, offset) {
+        this.queryBuilder.limit(limit, offset);
 
         return this;
     }
 
-    filter (filter, group = null) {
-        return this.where(filter, null, group);
+    // paginate(pageNumber, perPage = 10) {
+    //     this.queryBuilder.paginate(pageNumber, perPage);
+    //
+    //     return this;
+    // }
+
+    orderByDesc(column) {
+        return this.orderBy(column, 'desc');
     }
 
-    select (fields) {
-        if (_.isArray(fields)) {
-            const selectFields = _.clone(fields);
-            fields = {};
-            fields[this.resourceName()] = selectFields;
-        }
+    where(key, operator, value = null) {
+        this.queryBuilder.where(key, operator, value);
 
-        this.queryBuilder.select(fields);
+        return this;
+    }
+
+    from(date) {
+        this.queryBuilder(date);
+
+        return this;
+    }
+
+    to(date) {
+        this.queryBuilder.to(date);
+
+        return this;
+    }
+
+    select(...fields) {
+        this.queryBuilder.select(...fields);
+
+        return this;
+    }
+
+    distinct(bool = true){
+        this.queryBuilder.distinct(bool);
 
         return this;
     }
 
     // build model
 
-    respond (response) {
-        if (! _.isEmpty(response)) {
+    respond(response) {
+        if (!_.isEmpty(response)) {
             let data = this.deserialize(response);
 
             if (this.isCollection(data)) {
@@ -202,7 +227,7 @@ export default class Model {
         return null;
     }
 
-    resolveCollection (data) {
+    resolveCollection(data) {
         let thiss = this;
         let resolved = {};
 
@@ -221,11 +246,11 @@ export default class Model {
         return resolved;
     }
 
-    resolveItem (data) {
+    resolveItem(data) {
         return this.hydrate(data);
     }
 
-    hydrate (data) {
+    hydrate(data) {
         let model = _.clone(this);
 
         model.id = data.id;
@@ -272,7 +297,8 @@ export default class Model {
 
     // extract data from model
 
-    data () {
+
+    data() {
         let data = {};
 
         data.type = this.type;
@@ -306,11 +332,11 @@ export default class Model {
                         data_collection: true,
                         data: _.map(thiss[relationship].data, relation => {
                             return relation.data();
-                        })
+                        }),
                     };
                 } else {
                     data[relationship] = {
-                        data: thiss[relationship].data()
+                        data: thiss[relationship].data(),
                     };
                 }
             }
@@ -321,23 +347,23 @@ export default class Model {
 
     // helpers
 
-    resourceUrl () {
+    resourceUrl() {
         return `${this.baseUrl()}/${this.resourceName()}/`;
     }
 
-    isCollection (data) {
+    isCollection(data) {
         return data.hasOwnProperty('data_collection') && data.data_collection === true && _.isArray(data.data);
     }
 
-    deserialize (data) {
+    deserialize(data) {
         return formatter.deserialize(data);
     }
 
-    serialize (data) {
+    serialize(data) {
         return formatter.serialize(data);
     }
 
-    selfValidate () {
+    selfValidate() {
         const name = this.resourceName();
 
         if (name === null || !_.isString(name) || name.length === 0) {

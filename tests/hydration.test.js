@@ -3,7 +3,7 @@ import {
     Post as ApiPost,
     PostWithAllNesterRelations as ApiPostWithAllNesterRelations,
     PaginatedPostsList as ApiPaginatedPostsList,
-} from './dummy/data/json-api-responce';
+} from './dummy/data/json-api-response';
 import User from './dummy/models/User';
 import Tag from './dummy/models/Tag';
 import Comment from './dummy/models/Comment';

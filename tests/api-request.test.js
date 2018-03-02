@@ -4,7 +4,10 @@ import {
     Post as ApiPost,
     PostWithAllNesterRelations as ApiPostWithAllNesterRelations,
     Tag as ApiTag
-} from './dummy/data/json-api-responce';
+} from './dummy/data/json-api-response';
+import {config} from '../src/config';
+
+config.base_url = 'test://un.it/api';
 
 describe('api requests', () => {
     test('saving new object without an id should make a post request to resource endpoint', async () => {
@@ -24,7 +27,7 @@ describe('api requests', () => {
                 }
             },
             'method': 'POST',
-            'url': 'https://sarala-demo.app/api/posts/'
+            'url': config.base_url + '/posts/'
         });
     });
 
@@ -54,7 +57,7 @@ describe('api requests', () => {
                 }
             },
             'method': 'PUT',
-            'url': 'https://sarala-demo.app/api/posts/1'
+            'url': config.base_url + '/posts/1'
         });
     });
 
@@ -67,7 +70,7 @@ describe('api requests', () => {
 
         expect(result.testApiRequest).toEqual({
             'method': 'DELETE',
-            'url': 'https://sarala-demo.app/api/posts/1'
+            'url': config.base_url + '/posts/1'
         });
     });
 
@@ -84,7 +87,7 @@ describe('api requests', () => {
 
         expect(postResult.testApiRequest).toEqual({
             'method': 'POST',
-            'url': 'https://sarala-demo.app/api/posts/1/tags/5'
+            'url': config.base_url + '/posts/1/tags/5'
         });
     });
 
@@ -102,7 +105,7 @@ describe('api requests', () => {
         expect(postResult.testApiRequest).toEqual({
             'data': { 'baz': 100, 'foo': 'bar' },
             'method': 'POST',
-            'url': 'https://sarala-demo.app/api/posts/1/tags/5'
+            'url': config.base_url + '/posts/1/tags/5'
         });
     });
 
@@ -119,7 +122,7 @@ describe('api requests', () => {
 
         expect(postResult.testApiRequest).toEqual({
             'method': 'DELETE',
-            'url': 'https://sarala-demo.app/api/posts/1/tags/5'
+            'url': config.base_url + '/posts/1/tags/5'
         });
     });
 
@@ -144,7 +147,7 @@ describe('api requests', () => {
                 ]
             },
             'method': 'PUT',
-            'url': 'https://sarala-demo.app/api/posts/1/tags'
+            'url': config.base_url + '/posts/1/tags'
         });
     });
 });

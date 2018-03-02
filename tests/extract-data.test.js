@@ -2,7 +2,7 @@ import Post from './dummy/models/Post';
 import {
     Post as ApiPost,
     PostWithAllNesterRelations as ApiPostWithAllNesterRelations
-} from './dummy/data/json-api-responce';
+} from './dummy/data/json-api-response';
 
 describe('it extracts data from', () => {
     test('single object', async () => {

@@ -1,68 +1,75 @@
 import _ from 'lodash';
+import {config} from './config';
 
 export default class QueryBuilder {
-    constructor () {
+    constructor() {
         this.query = '';
         this.includes = [];
-        this.sort = [];
-        this.filters = {};
-        this.fields = {};
-        this.pagination = {};
+        this.sorts = [];
+        this.fields = [];
+        this.limitRows = null;
+        this.fromDate = null;
+        this.toDate = null;
+        this.selectDistinct = false;
+        this.wheres = [];
     }
 
-    include (resourceName) {
+    include(...resourceName) {
         if (!this.includes[resourceName]) {
-            this.includes.push(resourceName);
+            this.includes.push(...resourceName);
         }
     }
 
-    paginate (perPage, page) {
-        this.pagination = {
-            size: perPage,
-            number: page
-        };
+    limit(limit, offset) {
+        this.limitRows = {limit, offset};
     }
 
-    orderBy (column, direction) {
-        if (_.indexOf(['asc', 'desc'], direction) === -1) {
-            throw new Error(`Sarale: Invalid sort direction: "${direction}". Allowed only "asc" or "desc".`);
-        }
-
-        if (direction === 'desc') {
-            column = `-${column}`;
-        }
-
-        this.sort.push(column);
+    paginate(perPage = 10, pageNumber = 1) {
+        this.limit(perPage, pageNumber * perPage - perPage);
     }
 
-    where (key, value, group) {
-        if (_.isNull(group)) {
-            this.filters[key] = value;
-        } else {
-            if (_.isUndefined(this.filters[group])) {
-                this.filters[group] = {};
-            }
-
-            this.filters[group][key] = value;
-        }
-    }
-
-    select (fields) {
-        if (! _.isObject(fields)) {
-            throw new Error(`Sarala: Invalid fields list.`)
+    orderBy(column, direction = 'asc') {
+        direction = direction.toLowerCase();
+        if (!['asc', 'desc'].includes(direction)) {
+            throw new Error(`Sarale: Invalid sort direction: "${direction}". Allowed only "asc" or "desc" (case insensitive).`);
         }
 
-        _.forOwn(fields, (value, resource) => {
-            this.fields[resource] = value.toString();
-        });
+        this.sorts.push({column, direction});
     }
 
-    getQuery () {
+    where(key, operator, value) {
+        if (_.isNull(value)) {
+            value = operator;
+            operator = '=';
+        }
+
+        this.wheres.push({key, operator, value});
+    }
+
+    select(...fields) {
+        this.fields = fields;
+    }
+
+    distinct(bool = true) {
+        this.selectDistinct = bool;
+    }
+
+    from(date) {
+        this.from = date;
+    }
+
+    to(date) {
+        this.to = date;
+    }
+
+    getQuery() {
         this.appendIncludes();
-        this.appendFields();
-        this.appendFilters();
+        this.appendLimit();
         this.appendSort();
-        this.appendPagination();
+        this.appendFromTo();
+        this.appendFields();
+        this.appendWheres();
+        this.appendDistinct();
 
         if (this.query.length) {
             this.query = `?${this.query}`;
@@ -71,60 +78,54 @@ export default class QueryBuilder {
         return this.query;
     }
 
-    appendIncludes () {
+    appendDistinct() {
+        if (this.selectDistinct) {
+            this.appendQuery(`${config.request_keywords.selectDistinct}=${this.selectDistinct}`);
+        }
+    }
+
+    appendFromTo() {
+        if (this.fromDate) {
+            this.appendQuery(`${config.request_keywords.from}=${this.fromDate}`);
+        }
+
+        if (this.toDate) {
+            this.appendQuery(`${config.request_keywords.to}=${this.toDate}`);
+        }
+    }
+
+    appendWheres() {
+        for (const where of this.wheres) {
+            this.appendQuery(`${config.request_keywords.where}[]=${where.key},${where.operator},${where.value}`);
+        }
+    }
+
+    appendIncludes() {
         if (this.includes.length) {
-            this.appendQuery(`include=${this.includes.toString()}`);
+            this.appendQuery(`${config.request_keywords.load_relations}=${this.includes.toString()}`);
         }
     }
 
-    appendFields () {
-        let query = '';
-        let prepend = '';
-
-        _.forOwn(this.fields, (fields, resource) => {
-            query += `${prepend}fields[${resource}]=${fields.toString()}`;
-            prepend = '&';
-        });
-
-        if (query.length) {
-            this.appendQuery(query);
+    appendFields() {
+        if (this.fields.length) {
+            this.appendQuery(`${config.request_keywords.select_fields}=${this.fields.join(',')}`);
         }
     }
 
-    appendFilters () {
-        let query = '';
-        let prepend = '';
-
-        _.forOwn(this.filters, (value, filter) => {
-            if (_.isObject(value)) {
-                _.forOwn(value, (innerValue, innerFilter) => {
-                    query += `${prepend}filter[${filter}][${innerFilter}]=${innerValue.toString()}`;
-                    prepend = '&';
-                });
-            } else {
-                query += (_.isNull(value)) ? `${prepend}filter[${filter}]` : `${prepend}filter[${filter}]=${value.toString()}`;
-            }
-            prepend = '&';
-        });
-
-        if (query.length) {
-            this.appendQuery(query);
+    appendSort() {
+        if(this.sorts.length){
+            const fieldsArray = this.sorts.map(({column, direction}) => (direction === 'desc' ? '-' : '') + column);
+            this.appendQuery(`${config.request_keywords.order_by}=${fieldsArray.join(',')}`);
         }
     }
 
-    appendSort () {
-        if (this.sort.length) {
-            this.appendQuery(`sort=${this.sort.toString()}`);
+    appendLimit() {
+        if (this.limitRows) {
+            this.appendQuery(`limit=${this.limitRows.limit}&offset=${this.limitRows.offset}`);
         }
     }
 
-    appendPagination () {
-        if (! _.isEmpty(this.pagination)) {
-            this.appendQuery(`page[size]=${this.pagination.size}&page[number]=${this.pagination.number}`);
-        }
-    }
-
-    appendQuery (append) {
+    appendQuery(append) {
         if (this.query.length) {
             append = `&${append}`;
         }
