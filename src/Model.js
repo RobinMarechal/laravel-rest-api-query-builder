@@ -2,8 +2,8 @@ import _ from 'lodash';
 import moment from 'moment';
 import {Formatter} from 'sarala-json-api-data-formatter';
 import QueryBuilder from './QueryBuilder';
-import {config} from './config';
-import UnimplementedException from '../../exceptions/src/exceptions/UnimplementedException';
+import {REST_CONFIG as config} from './config';
+import {UnimplementedException} from 'bunch-of-exceptions';
 
 const formatter = new Formatter();
 
