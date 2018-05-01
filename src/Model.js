@@ -29,7 +29,7 @@ export default class Model {
     }
 
     computed() {
-        throw UnimplementedException("Method computed() must be implemented in every child class.");
+        return {};
     }
 
     getNamespace() {
@@ -206,7 +206,7 @@ export default class Model {
         return this;
     }
 
-    distinct(bool = true){
+    distinct(bool = true) {
         this.queryBuilder.distinct(bool);
 
         return this;
