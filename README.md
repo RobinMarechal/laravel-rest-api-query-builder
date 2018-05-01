@@ -46,19 +46,19 @@ import Tag from './Tag';
 import User from './User';
 
 export default class Post extends Model {
-    resourceName () {
+    getNamespace () {
         return 'posts';
     }
 
-    fields () {
+    getFields () {
         return ['title', 'subtitle', 'body', 'slug'];
     }
 
-    dates () {
+    getDates () {
         return ['published_at'];
     }
 
-    relationships () {
+    getRelations () {
         return {
             author: new User(),
             comments: new Comment(),
@@ -85,11 +85,11 @@ export default class Post extends Model {
 import Model from './BaseModel';
 
 export default class Tag extends Model {
-    resourceName () {
+    getNamespace () {
         return 'tags';
     }
 
-    fields () {
+    getFields () {
         return ['name'];
     }
 }
