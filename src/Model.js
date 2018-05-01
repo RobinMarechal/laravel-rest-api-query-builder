@@ -3,6 +3,7 @@ import moment from 'moment';
 import {Formatter} from 'sarala-json-api-data-formatter';
 import QueryBuilder from './QueryBuilder';
 import {config} from './config';
+import UnimplementedException from '../../exceptions/src/exceptions/UnimplementedException';
 
 const formatter = new Formatter();
 
@@ -10,41 +11,41 @@ export default class Model {
     constructor() {
         this.queryBuilder = new QueryBuilder();
         this.selfValidate();
-        this.type = this.resourceName();
+        this.type = this.getNamespace();
     }
 
     // override
 
     getFields() {
-        return [];
+        throw UnimplementedException("Method getFields() must be implemented in every child class.");
     }
 
     getDates() {
-        return [];
+        throw UnimplementedException("Method getDates() must be implemented in every child class.");
     }
 
     getRelations() {
-        return {};
+        throw UnimplementedException("Method getRelations() must be implemented in every child class.");
     }
 
     computed() {
-        return {};
+        throw UnimplementedException("Method computed() must be implemented in every child class.");
     }
 
-    resourceName() {
-        return null;
+    getNamespace() {
+        throw UnimplementedException("Method getNamespace() must be implemented in every child class.");
     }
 
     dateFormat() {
         return 'YYYY-MM-DD HH:mm';
     }
 
-    baseUrl() {
+    getBaseUrl() {
         return config.base_url;
     }
 
     async request(config) {
-        // to be implemented in base model
+        throw UnimplementedException("Method request() must be implemented in base model.");
     }
 
     // requests
@@ -348,7 +349,7 @@ export default class Model {
     // helpers
 
     resourceUrl() {
-        return `${this.baseUrl()}/${this.resourceName()}/`;
+        return `${this.getBaseUrl()}/${this.getNamespace()}/`;
     }
 
     isCollection(data) {
@@ -364,7 +365,7 @@ export default class Model {
     }
 
     selfValidate() {
-        const name = this.resourceName();
+        const name = this.getNamespace();
 
         if (name === null || !_.isString(name) || name.length === 0) {
             throw new Error(`Sarale: Resource name not defined in ${this.constructor.name} model. Implement resourceName method in the ${this.constructor.name} model to resolve this error.`);

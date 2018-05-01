@@ -9,7 +9,7 @@ const initModelLikeAFool = () => {
 config.base_url = 'test://un.it/api';
 
 test('it throws error when try to initialize model without resource name', () => {
-    expect(initModelLikeAFool).toThrow('Sarale: Resource name not defined in Fool model. Implement resourceName method in the Fool model to resolve this error.');
+    expect(initModelLikeAFool).toThrow('Sarale: Resource name not defined in Fool model. Implement getNamespace method in the Fool model to resolve this error.');
 });
 
 test('can call overridable methods of initialize model', () => {
@@ -19,7 +19,7 @@ test('can call overridable methods of initialize model', () => {
     expect(unicorn.getDates()).toEqual([]);
     expect(unicorn.getRelations()).toEqual({});
     expect(unicorn.computed()).toEqual({});
-    expect(unicorn.resourceName()).toEqual('unicorns');
-    expect(unicorn.baseUrl()).toEqual('test://un.it/api');
+    expect(unicorn.getNamespace()).toEqual('unicorns');
+    expect(unicorn.getBaseUrl()).toEqual('test://un.it/api');
     expect(unicorn.dateFormat()).toEqual('YYYY-MM-DD HH:mm');
 });

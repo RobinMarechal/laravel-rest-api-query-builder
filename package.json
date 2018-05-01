@@ -35,6 +35,7 @@
   },
   "homepage": "https://github.com/robinmarechal/laravel-rest-api-query-builder#readme",
   "dependencies": {
+    "bunch-of-exceptions": "0.0.1",
     "lodash": "^4.17.5",
     "moment": "^2.20.1",
     "sarala-json-api-data-formatter": "^0.1.0"
