@@ -15,15 +15,15 @@ export default class Model {
 
     // override
 
-    fields() {
+    getFields() {
         return [];
     }
 
-    dates() {
+    getDates() {
         return [];
     }
 
-    relationships() {
+    getRelations() {
         return {};
     }
 
@@ -154,7 +154,7 @@ export default class Model {
     // modify query string
 
     with(...resourceName) {
-        this.queryBuilder.include(...resourceName);
+        this.queryBuilder.with(...resourceName);
 
         return this;
     }
@@ -256,7 +256,7 @@ export default class Model {
         model.id = data.id;
         model.type = data.type;
 
-        if (data.hasOwnProperty('relationships')) {
+        if (data.hasOwnProperty('getRelations')) {
             model.relationshipNames = data.relationships;
         }
 
@@ -264,11 +264,11 @@ export default class Model {
             model.links = data.links;
         }
 
-        _.forEach(this.fields(), field => {
+        _.forEach(this.getFields(), field => {
             model[field] = data[field];
         });
 
-        _.forEach(this.dates(), field => {
+        _.forEach(this.getDates(), field => {
             model[field] = moment(data[field]);
         });
 
@@ -311,13 +311,13 @@ export default class Model {
             data.relationships = this.relationshipNames;
         }
 
-        _.forEach(this.fields(), field => {
+        _.forEach(this.getFields(), field => {
             if (!_.isUndefined(this[field])) {
                 data[field] = this[field];
             }
         });
 
-        _.forEach(this.dates(), field => {
+        _.forEach(this.getDates(), field => {
             if (!_.isUndefined(this[field])) {
                 data[field] = this[field].format(this.dateFormat());
             }
@@ -325,7 +325,7 @@ export default class Model {
 
         let thiss = this;
 
-        _.forEach(thiss.relationships(), (model, relationship) => {
+        _.forEach(thiss.getRelations(), (model, relationship) => {
             if (!_.isUndefined(thiss[relationship])) {
                 if (_.isArray(thiss[relationship].data)) {
                     data[relationship] = {

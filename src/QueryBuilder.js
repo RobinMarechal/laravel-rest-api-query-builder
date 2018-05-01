@@ -4,7 +4,7 @@ import {config} from './config';
 export default class QueryBuilder {
     constructor() {
         this.query = '';
-        this.includes = [];
+        this.with = [];
         this.sorts = [];
         this.fields = [];
         this.limitRows = null;
@@ -14,9 +14,9 @@ export default class QueryBuilder {
         this.wheres = [];
     }
 
-    include(...resourceName) {
-        if (!this.includes[resourceName]) {
-            this.includes.push(...resourceName);
+    with(...resourceName) {
+        if (!this.with[resourceName]) {
+            this.with.push(...resourceName);
         }
     }
 
@@ -101,8 +101,8 @@ export default class QueryBuilder {
     }
 
     appendIncludes() {
-        if (this.includes.length) {
-            this.appendQuery(`${config.request_keywords.load_relations}=${this.includes.toString()}`);
+        if (this.with.length) {
+            this.appendQuery(`${config.request_keywords.load_relations}=${this.with.toString()}`);
         }
     }
 

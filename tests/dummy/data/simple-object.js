@@ -108,7 +108,7 @@ export const PostWithAllNesterRelations = {
         },
         "links": {
             "related": "https://sarala-demo.app/api/posts/1/author",
-            "self": "https://sarala-demo.app/api/posts/1/relationships/author"
+            "self": "https://sarala-demo.app/api/posts/1/getRelations/author"
         }
     },
     "comments": {
@@ -126,7 +126,7 @@ export const PostWithAllNesterRelations = {
                     },
                     "links": {
                         "related": "https://sarala-demo.app/api/comments/1/author",
-                        "self": "https://sarala-demo.app/api/comments/1/relationships/author"
+                        "self": "https://sarala-demo.app/api/comments/1/getRelations/author"
                     }
                 },
                 "body": "Nihil et quia tempora est quae nostrum velit ipsum. Nemo et aut maxime id.",
@@ -153,7 +153,7 @@ export const PostWithAllNesterRelations = {
                     },
                     "links": {
                         "related": "https://sarala-demo.app/api/comments/2/author",
-                        "self": "https://sarala-demo.app/api/comments/2/relationships/author"
+                        "self": "https://sarala-demo.app/api/comments/2/getRelations/author"
                     }
                 },
                 "body": "Sint quaerat et ut delectus ratione id alias ab. Aut molestias ut dolores maiores ratione deserunt.",
@@ -171,7 +171,7 @@ export const PostWithAllNesterRelations = {
         "data_collection": true,
         "links": {
             "related": "https://sarala-demo.app/api/posts/1/comments",
-            "self": "https://sarala-demo.app/api/posts/1/relationships/comments"
+            "self": "https://sarala-demo.app/api/posts/1/getRelations/comments"
         }
     },
     "tags": {
@@ -196,7 +196,7 @@ export const PostWithAllNesterRelations = {
         "data_collection": true,
         "links": {
             "related": "https://sarala-demo.app/api/posts/1/tags",
-            "self": "https://sarala-demo.app/api/posts/1/relationships/tags"
+            "self": "https://sarala-demo.app/api/posts/1/getRelations/tags"
         }
     },
     "links": {

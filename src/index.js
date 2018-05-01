@@ -1,5 +1,7 @@
 import Model from './Model';
+import {REST_CONFIG} from './config';
 
 export {
-    Model
+    Model,
+    REST_CONFIG
 };

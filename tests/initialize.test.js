@@ -15,9 +15,9 @@ test('it throws error when try to initialize model without resource name', () =>
 test('can call overridable methods of initialize model', () => {
     const unicorn = new Unicorn();
 
-    expect(unicorn.fields()).toEqual([]);
-    expect(unicorn.dates()).toEqual([]);
-    expect(unicorn.relationships()).toEqual({});
+    expect(unicorn.getFields()).toEqual([]);
+    expect(unicorn.getDates()).toEqual([]);
+    expect(unicorn.getRelations()).toEqual({});
     expect(unicorn.computed()).toEqual({});
     expect(unicorn.resourceName()).toEqual('unicorns');
     expect(unicorn.baseUrl()).toEqual('test://un.it/api');

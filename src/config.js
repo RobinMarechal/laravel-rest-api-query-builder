@@ -1,4 +1,4 @@
-export const config = {
+export const REST_CONFIG = {
     base_url: window.location.href + '/api',
 
     default_temporal_field: 'created_at',

@@ -48,7 +48,7 @@ export const PostWithAllNesterRelations = {
         "relationships": {
             "author": {
                 "links": {
-                    "self": "test://un.it/api/posts/1/relationships/author",
+                    "self": "test://un.it/api/posts/1/getRelations/author",
                     "related": "test://un.it/api/posts/1/author"
                 },
                 "data": {
@@ -58,7 +58,7 @@ export const PostWithAllNesterRelations = {
             },
             "tags": {
                 "links": {
-                    "self": "test://un.it/api/posts/1/relationships/tags",
+                    "self": "test://un.it/api/posts/1/getRelations/tags",
                     "related": "test://un.it/api/posts/1/tags"
                 },
                 "data": [
@@ -74,7 +74,7 @@ export const PostWithAllNesterRelations = {
             },
             "comments": {
                 "links": {
-                    "self": "test://un.it/api/posts/1/relationships/comments",
+                    "self": "test://un.it/api/posts/1/getRelations/comments",
                     "related": "test://un.it/api/posts/1/comments"
                 },
                 "data": [
@@ -157,7 +157,7 @@ export const PostWithAllNesterRelations = {
             "relationships": {
                 "author": {
                     "links": {
-                        "self": "test://un.it/api/comments/1/relationships/author",
+                        "self": "test://un.it/api/comments/1/getRelations/author",
                         "related": "test://un.it/api/comments/1/author"
                     },
                     "data": {
@@ -180,7 +180,7 @@ export const PostWithAllNesterRelations = {
             "relationships": {
                 "author": {
                     "links": {
-                        "self": "test://un.it/api/comments/2/relationships/author",
+                        "self": "test://un.it/api/comments/2/getRelations/author",
                         "related": "test://un.it/api/comments/2/author"
                     },
                     "data": {
@@ -287,7 +287,7 @@ export const PaginatedPostsListWithAllNesterRelations = {
             "relationships": {
                 "author": {
                     "links": {
-                        "self": "test://un.it/api/posts/1/relationships/author",
+                        "self": "test://un.it/api/posts/1/getRelations/author",
                         "related": "test://un.it/api/posts/1/author"
                     },
                     "data": {
@@ -297,7 +297,7 @@ export const PaginatedPostsListWithAllNesterRelations = {
                 },
                 "tags": {
                     "links": {
-                        "self": "test://un.it/api/posts/1/relationships/tags",
+                        "self": "test://un.it/api/posts/1/getRelations/tags",
                         "related": "test://un.it/api/posts/1/tags"
                     },
                     "data": [
@@ -313,7 +313,7 @@ export const PaginatedPostsListWithAllNesterRelations = {
                 },
                 "comments": {
                     "links": {
-                        "self": "test://un.it/api/posts/1/relationships/comments",
+                        "self": "test://un.it/api/posts/1/getRelations/comments",
                         "related": "test://un.it/api/posts/1/comments"
                     },
                     "data": [
@@ -345,7 +345,7 @@ export const PaginatedPostsListWithAllNesterRelations = {
             "relationships": {
                 "author": {
                     "links": {
-                        "self": "test://un.it/api/posts/2/relationships/author",
+                        "self": "test://un.it/api/posts/2/getRelations/author",
                         "related": "test://un.it/api/posts/2/author"
                     },
                     "data": {
@@ -355,7 +355,7 @@ export const PaginatedPostsListWithAllNesterRelations = {
                 },
                 "tags": {
                     "links": {
-                        "self": "test://un.it/api/posts/2/relationships/tags",
+                        "self": "test://un.it/api/posts/2/getRelations/tags",
                         "related": "test://un.it/api/posts/2/tags"
                     },
                     "data": [
@@ -375,7 +375,7 @@ export const PaginatedPostsListWithAllNesterRelations = {
                 },
                 "comments": {
                     "links": {
-                        "self": "test://un.it/api/posts/2/relationships/comments",
+                        "self": "test://un.it/api/posts/2/getRelations/comments",
                         "related": "test://un.it/api/posts/2/comments"
                     },
                     "data": [
@@ -403,7 +403,7 @@ export const PaginatedPostsListWithAllNesterRelations = {
             "relationships": {
                 "author": {
                     "links": {
-                        "self": "test://un.it/api/posts/3/relationships/author",
+                        "self": "test://un.it/api/posts/3/getRelations/author",
                         "related": "test://un.it/api/posts/3/author"
                     },
                     "data": {
@@ -413,7 +413,7 @@ export const PaginatedPostsListWithAllNesterRelations = {
                 },
                 "tags": {
                     "links": {
-                        "self": "test://un.it/api/posts/3/relationships/tags",
+                        "self": "test://un.it/api/posts/3/getRelations/tags",
                         "related": "test://un.it/api/posts/3/tags"
                     },
                     "data": [
@@ -437,7 +437,7 @@ export const PaginatedPostsListWithAllNesterRelations = {
                 },
                 "comments": {
                     "links": {
-                        "self": "test://un.it/api/posts/3/relationships/comments",
+                        "self": "test://un.it/api/posts/3/getRelations/comments",
                         "related": "test://un.it/api/posts/3/comments"
                     },
                     "data": [
@@ -481,7 +481,7 @@ export const PaginatedPostsListWithAllNesterRelations = {
             "relationships": {
                 "author": {
                     "links": {
-                        "self": "test://un.it/api/posts/4/relationships/author",
+                        "self": "test://un.it/api/posts/4/getRelations/author",
                         "related": "test://un.it/api/posts/4/author"
                     },
                     "data": {
@@ -491,7 +491,7 @@ export const PaginatedPostsListWithAllNesterRelations = {
                 },
                 "tags": {
                     "links": {
-                        "self": "test://un.it/api/posts/4/relationships/tags",
+                        "self": "test://un.it/api/posts/4/getRelations/tags",
                         "related": "test://un.it/api/posts/4/tags"
                     },
                     "data": [
@@ -503,7 +503,7 @@ export const PaginatedPostsListWithAllNesterRelations = {
                 },
                 "comments": {
                     "links": {
-                        "self": "test://un.it/api/posts/4/relationships/comments",
+                        "self": "test://un.it/api/posts/4/getRelations/comments",
                         "related": "test://un.it/api/posts/4/comments"
                     },
                     "data": [
@@ -705,7 +705,7 @@ export const PaginatedPostsListWithAllNesterRelations = {
             "relationships": {
                 "author": {
                     "links": {
-                        "self": "test://un.it/api/comments/1/relationships/author",
+                        "self": "test://un.it/api/comments/1/getRelations/author",
                         "related": "test://un.it/api/comments/1/author"
                     },
                     "data": {
@@ -728,7 +728,7 @@ export const PaginatedPostsListWithAllNesterRelations = {
             "relationships": {
                 "author": {
                     "links": {
-                        "self": "test://un.it/api/comments/2/relationships/author",
+                        "self": "test://un.it/api/comments/2/getRelations/author",
                         "related": "test://un.it/api/comments/2/author"
                     },
                     "data": {
@@ -782,7 +782,7 @@ export const PaginatedPostsListWithAllNesterRelations = {
             "relationships": {
                 "author": {
                     "links": {
-                        "self": "test://un.it/api/comments/3/relationships/author",
+                        "self": "test://un.it/api/comments/3/getRelations/author",
                         "related": "test://un.it/api/comments/3/author"
                     },
                     "data": {
@@ -846,7 +846,7 @@ export const PaginatedPostsListWithAllNesterRelations = {
             "relationships": {
                 "author": {
                     "links": {
-                        "self": "test://un.it/api/comments/4/relationships/author",
+                        "self": "test://un.it/api/comments/4/getRelations/author",
                         "related": "test://un.it/api/comments/4/author"
                     },
                     "data": {
@@ -869,7 +869,7 @@ export const PaginatedPostsListWithAllNesterRelations = {
             "relationships": {
                 "author": {
                     "links": {
-                        "self": "test://un.it/api/comments/5/relationships/author",
+                        "self": "test://un.it/api/comments/5/getRelations/author",
                         "related": "test://un.it/api/comments/5/author"
                     },
                     "data": {
@@ -892,7 +892,7 @@ export const PaginatedPostsListWithAllNesterRelations = {
             "relationships": {
                 "author": {
                     "links": {
-                        "self": "test://un.it/api/comments/6/relationships/author",
+                        "self": "test://un.it/api/comments/6/getRelations/author",
                         "related": "test://un.it/api/comments/6/author"
                     },
                     "data": {
@@ -915,7 +915,7 @@ export const PaginatedPostsListWithAllNesterRelations = {
             "relationships": {
                 "author": {
                     "links": {
-                        "self": "test://un.it/api/comments/7/relationships/author",
+                        "self": "test://un.it/api/comments/7/getRelations/author",
                         "related": "test://un.it/api/comments/7/author"
                     },
                     "data": {
@@ -938,7 +938,7 @@ export const PaginatedPostsListWithAllNesterRelations = {
             "relationships": {
                 "author": {
                     "links": {
-                        "self": "test://un.it/api/comments/8/relationships/author",
+                        "self": "test://un.it/api/comments/8/getRelations/author",
                         "related": "test://un.it/api/comments/8/author"
                     },
                     "data": {
@@ -982,7 +982,7 @@ export const PaginatedPostsListWithAllNesterRelations = {
             "relationships": {
                 "author": {
                     "links": {
-                        "self": "test://un.it/api/comments/9/relationships/author",
+                        "self": "test://un.it/api/comments/9/getRelations/author",
                         "related": "test://un.it/api/comments/9/author"
                     },
                     "data": {
@@ -1005,7 +1005,7 @@ export const PaginatedPostsListWithAllNesterRelations = {
             "relationships": {
                 "author": {
                     "links": {
-                        "self": "test://un.it/api/comments/10/relationships/author",
+                        "self": "test://un.it/api/comments/10/getRelations/author",
                         "related": "test://un.it/api/comments/10/author"
                     },
                     "data": {
@@ -1028,7 +1028,7 @@ export const PaginatedPostsListWithAllNesterRelations = {
             "relationships": {
                 "author": {
                     "links": {
-                        "self": "test://un.it/api/comments/11/relationships/author",
+                        "self": "test://un.it/api/comments/11/getRelations/author",
                         "related": "test://un.it/api/comments/11/author"
                     },
                     "data": {
@@ -1051,7 +1051,7 @@ export const PaginatedPostsListWithAllNesterRelations = {
             "relationships": {
                 "author": {
                     "links": {
-                        "self": "test://un.it/api/comments/12/relationships/author",
+                        "self": "test://un.it/api/comments/12/getRelations/author",
                         "related": "test://un.it/api/comments/12/author"
                     },
                     "data": {

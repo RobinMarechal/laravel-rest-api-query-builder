@@ -92,8 +92,8 @@ describe('query builder', () => {
         });
     });
 
-    describe('sparse fields', () => {
-        test('model fields as an array', async () => {
+    describe('sparse getFields', () => {
+        test('model getFields as an array', async () => {
             const post = new Post();
             post.testApiResponse = {};
             await post.select('title', 'subtitle').all();
@@ -104,7 +104,7 @@ describe('query builder', () => {
             });
         });
 
-        test('relationships fields as an object', async () => {
+        test('getRelations getFields as an object', async () => {
             const post = new Post();
             post.testApiResponse = {};
             await post.select('title', 'subtitle', 'tags.name').all();
