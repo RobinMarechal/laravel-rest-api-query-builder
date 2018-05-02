@@ -1,5 +1,5 @@
 import _ from 'lodash';
-import {REST_CONFIG} from './config';
+import { REST_CONFIG } from './config';
 
 export default class QueryBuilder {
     constructor() {
