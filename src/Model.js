@@ -2,7 +2,7 @@ import _ from 'lodash';
 import moment from 'moment';
 import {Formatter} from 'sarala-json-api-data-formatter';
 import QueryBuilder from './QueryBuilder';
-import {REST_CONFIG as config} from './config';
+import {REST_CONFIG} from './config';
 import {UnimplementedException} from 'bunch-of-exceptions';
 
 const formatter = new Formatter();
@@ -41,7 +41,7 @@ export default class Model {
     }
 
     getBaseUrl() {
-        return config.base_url;
+        return REST_CONFIG.base_url;
     }
 
     async request(config) {
@@ -53,7 +53,7 @@ export default class Model {
     async find(id) {
         let response = await this.request({
             url: `${this.resourceUrl()}${id}${this.queryBuilder.getQuery()}`,
-            method: config.http_methods.get,
+            method: REST_CONFIG.http_methods.get,
         });
 
         return this.respond(response.data);
@@ -62,7 +62,7 @@ export default class Model {
     async all() {
         let response = await this.request({
             url: `${this.resourceUrl()}${this.queryBuilder.getQuery()}`,
-            method: config.http_methods.get,
+            method: REST_CONFIG.http_methods.get,
         });
 
         return this.respond(response.data);
@@ -73,7 +73,7 @@ export default class Model {
 
         let response = await this.request({
             url: `${this.resourceUrl()}${this.queryBuilder.getQuery()}`,
-            method: config.http_methods.get,
+            method: REST_CONFIG.http_methods.get,
         });
 
         return this.respond(response.data);
@@ -90,7 +90,7 @@ export default class Model {
     async create() {
         let response = await this.request({
             url: this.resourceUrl(),
-            method: config.http_methods.create,
+            method: REST_CONFIG.http_methods.create,
             data: this.serialize(this.data()),
         });
 
@@ -100,7 +100,7 @@ export default class Model {
     async update() {
         let response = await this.request({
             url: this.links.self,
-            method: config.http_methods.update,
+            method: REST_CONFIG.http_methods.update,
             data: this.serialize(this.data()),
         });
 
@@ -110,7 +110,7 @@ export default class Model {
     async delete() {
         let response = this.request({
             url: this.links.self,
-            method: config.http_methods.delete,
+            method: REST_CONFIG.http_methods.delete,
         });
 
         return this.respond(response.data);
@@ -119,7 +119,7 @@ export default class Model {
     async attach(model, data = null) {
         let queryConfig = {
             url: `${this.links.self}/${model.type}/${model.id}`,
-            method: config.http_methods.create,
+            method: REST_CONFIG.http_methods.create,
         };
 
         if (data) {
@@ -134,7 +134,7 @@ export default class Model {
     async detach(model) {
         let response = await this.request({
             url: `${this.links.self}/${model.type}/${model.id}`,
-            method: config.http_methods.delete,
+            method: REST_CONFIG.http_methods.delete,
         });
 
         return this.respond(response.data);
@@ -145,7 +145,7 @@ export default class Model {
 
         let respond = await this.request({
             url: `${this.links.self}/${relationship}`,
-            method: config.http_methods.update,
+            method: REST_CONFIG.http_methods.update,
             data: data.data.relationships[relationship],
         });
 
