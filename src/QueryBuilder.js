@@ -1,5 +1,5 @@
 import _ from 'lodash';
-import {config} from './config';
+import {REST_CONFIG} from './config';
 
 export default class QueryBuilder {
     constructor() {
@@ -80,42 +80,42 @@ export default class QueryBuilder {
 
     appendDistinct() {
         if (this.selectDistinct) {
-            this.appendQuery(`${config.request_keywords.selectDistinct}=${this.selectDistinct}`);
+            this.appendQuery(`${REST_CONFIG.request_keywords.selectDistinct}=${this.selectDistinct}`);
         }
     }
 
     appendFromTo() {
         if (this.fromDate) {
-            this.appendQuery(`${config.request_keywords.from}=${this.fromDate}`);
+            this.appendQuery(`${REST_CONFIG.request_keywords.from}=${this.fromDate}`);
         }
 
         if (this.toDate) {
-            this.appendQuery(`${config.request_keywords.to}=${this.toDate}`);
+            this.appendQuery(`${REST_CONFIG.request_keywords.to}=${this.toDate}`);
         }
     }
 
     appendWheres() {
         for (const where of this.wheres) {
-            this.appendQuery(`${config.request_keywords.where}[]=${where.key},${where.operator},${where.value}`);
+            this.appendQuery(`${REST_CONFIG.request_keywords.where}[]=${where.key},${where.operator},${where.value}`);
         }
     }
 
     appendIncludes() {
         if (this.with.length) {
-            this.appendQuery(`${config.request_keywords.load_relations}=${this.with.toString()}`);
+            this.appendQuery(`${REST_CONFIG.request_keywords.load_relations}=${this.with.toString()}`);
         }
     }
 
     appendFields() {
         if (this.fields.length) {
-            this.appendQuery(`${config.request_keywords.select_fields}=${this.fields.join(',')}`);
+            this.appendQuery(`${REST_CONFIG.request_keywords.select_fields}=${this.fields.join(',')}`);
         }
     }
 
     appendSort() {
         if(this.sorts.length){
             const fieldsArray = this.sorts.map(({column, direction}) => (direction === 'desc' ? '-' : '') + column);
-            this.appendQuery(`${config.request_keywords.order_by}=${fieldsArray.join(',')}`);
+            this.appendQuery(`${REST_CONFIG.request_keywords.order_by}=${fieldsArray.join(',')}`);
         }
     }
 
