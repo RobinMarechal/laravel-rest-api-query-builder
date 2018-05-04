@@ -34,11 +34,11 @@ export default class ResponseHandler {
         const relationNames = Object.keys(relations);
 
         for (const prop in json) {
-            if (fields.includes(prop)) {
-                instance[prop] = json[prop];
-            }
-            else if (dateNames.includes(prop)) {
+            if (dateNames.includes(prop)) {
                 instance[prop] = this.dateFromString(dates[prop], json[prop]);
+            }
+            else if (fields.includes(prop)) {
+                instance[prop] = json[prop];
             }
             else if (relationNames.includes(prop)) {
                 if (relations[prop].list) {

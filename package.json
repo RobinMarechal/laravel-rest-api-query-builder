@@ -1,13 +1,13 @@
 {
   "name": "laravel-rest-api-query-builder",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "description": "JavaScript library to build RESTful API HTTP calls. This is made to work with RESTful APIs that use laravel-rest-api package. Inspired by Eloquent's Syntax. All credit goes to milroyfraser for his package sarala.",
   "main": "build/index.js",
   "scripts": {
     "build": "babel src -d build",
     "t": "jest",
     "tw": "jest --watch",
-    "cc": "jest --coverage",
+    "cc": "jest --coverage",M
     "cs": "./node_modules/.bin/eslint src/*",
     "csf": "./node_modules/.bin/eslint src/* --fix"
   },

@@ -1,10 +1,10 @@
 import _ from 'lodash';
-import { REST_CONFIG } from './config';
+import {REST_CONFIG} from './config';
 
 export default class QueryBuilder {
     constructor() {
         this.query = '';
-        this.with = [];
+        this.relations = [];
         this.sorts = [];
         this.fields = [];
         this.limitRows = null;
@@ -15,8 +15,8 @@ export default class QueryBuilder {
     }
 
     with(...resourceName) {
-        if (!this.with[resourceName]) {
-            this.with.push(...resourceName);
+        if (!this.relations[resourceName]) {
+            this.relations.push(...resourceName);
         }
     }
 
@@ -101,8 +101,8 @@ export default class QueryBuilder {
     }
 
     appendIncludes() {
-        if (this.with.length) {
-            this.appendQuery(`${REST_CONFIG.request_keywords.load_relations}=${this.with.toString()}`);
+        if (this.relations.length) {
+            this.appendQuery(`${REST_CONFIG.request_keywords.load_relations}=${this.relations.join(',')}`);
         }
     }
 
@@ -113,7 +113,7 @@ export default class QueryBuilder {
     }
 
     appendSort() {
-        if(this.sorts.length){
+        if (this.sorts.length) {
             const fieldsArray = this.sorts.map(({column, direction}) => (direction === 'desc' ? '-' : '') + column);
             this.appendQuery(`${REST_CONFIG.request_keywords.order_by}=${fieldsArray.join(',')}`);
         }
