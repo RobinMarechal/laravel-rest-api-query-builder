@@ -1,11 +1,8 @@
 import _ from 'lodash';
-import moment from 'moment';
-import {Formatter} from 'sarala-json-api-data-formatter';
 import QueryBuilder from './QueryBuilder';
 import {REST_CONFIG} from './config';
 import {UnimplementedException} from 'bunch-of-exceptions';
-
-const formatter = new Formatter();
+import ResponseHandler from './ResponseHandler';
 
 export default class Model {
     constructor() {
@@ -21,11 +18,11 @@ export default class Model {
     }
 
     getDates() {
-        throw UnimplementedException("Method getDates() must be implemented in every child class.");
+        return {};
     }
 
     getRelations() {
-        throw UnimplementedException("Method getRelations() must be implemented in every child class.");
+        return {};
     }
 
     computed() {
@@ -36,19 +33,56 @@ export default class Model {
         throw UnimplementedException("Method getNamespace() must be implemented in every child class.");
     }
 
-    dateFormat() {
-        return 'YYYY-MM-DD HH:mm';
-    }
-
     getBaseUrl() {
         return REST_CONFIG.base_url;
     }
 
     async request(config) {
-        throw UnimplementedException("Method request() must be implemented in base model.");
+        const opt = {
+            method: config.method
+        }
+
+        if(config.data && !_.isEmpty(config.data)){
+            opt.data = config.data;
+        }
+
+        const response = await fetch(config.url, opt);
+        return (await response.json());
     }
 
     // requests
+
+    toJson() {
+        const json = {};
+
+        const fields = this.getFields();
+        const relations = this.getRelations();
+        const relationsName = Object.keys(relations);
+        const dates = this.getDates();
+        const datesName = Object.keys(dates);
+
+        for (const prop in this) {
+            if (fields.includes(prop)) {
+                json[prop] = this[prop];
+            }
+            else if (datesName.includes(prop)) {
+                json[prop] = this[prop].toString();
+                if (json[prop].includes('T')) {
+                    json[prop] = json[prop].replace('T', ' ').replace('Z', '');
+                }
+            }
+            else if (relationsName.includes(prop)) {
+                if (relations[prop].list) {
+                    json[prop] = this[prop].map((one) => one.toJson());
+                }
+                else {
+                    json[prop] = this[prop].toJson();
+                }
+            }
+        }
+
+        return json;
+    }
 
     async find(id) {
         let response = await this.request({
@@ -91,7 +125,7 @@ export default class Model {
         let response = await this.request({
             url: this.resourceUrl(),
             method: REST_CONFIG.http_methods.create,
-            data: this.serialize(this.data()),
+            data: this.toJson(),
         });
 
         return this.respond(response.data);
@@ -101,7 +135,7 @@ export default class Model {
         let response = await this.request({
             url: this.links.self,
             method: REST_CONFIG.http_methods.update,
-            data: this.serialize(this.data()),
+            data: this.toJson(),
         });
 
         return this.respond(response.data);
@@ -116,10 +150,10 @@ export default class Model {
         return this.respond(response.data);
     }
 
-    async attach(model, data = null) {
+    async attach(model, data = null, sync = false) {
         let queryConfig = {
-            url: `${this.links.self}/${model.type}/${model.id}`,
-            method: REST_CONFIG.http_methods.create,
+            url: `${this.getNamespace()}/${this.id}/${model.getNamespace()}/${model.id}${sync ? '?sync=true' : ''}`,
+            method: sync ? REST_CONFIG.http_methods.update : REST_CONFIG.http_methods.create,
         };
 
         if (data) {
@@ -133,23 +167,15 @@ export default class Model {
 
     async detach(model) {
         let response = await this.request({
-            url: `${this.links.self}/${model.type}/${model.id}`,
+            url: `${this.getNamespace()}/${this.id}/${model.getNamespace()}/${model.id}`,
             method: REST_CONFIG.http_methods.delete,
         });
 
         return this.respond(response.data);
     }
 
-    async sync(relationship) {
-        const data = this.serialize(this.data());
-
-        let respond = await this.request({
-            url: `${this.links.self}/${relationship}`,
-            method: REST_CONFIG.http_methods.update,
-            data: data.data.relationships[relationship],
-        });
-
-        return this.respond(respond.data);
+    async sync(model, data) {
+        return this.attach(model, data, true);
     }
 
     // modify query string
@@ -171,12 +197,6 @@ export default class Model {
 
         return this;
     }
-
-    // paginate(pageNumber, perPage = 10) {
-    //     this.queryBuilder.paginate(pageNumber, perPage);
-    //
-    //     return this;
-    // }
 
     orderByDesc(column) {
         return this.orderBy(column, 'desc');
@@ -214,136 +234,8 @@ export default class Model {
 
     // build model
 
-    respond(response) {
-        if (!_.isEmpty(response)) {
-            let data = this.deserialize(response);
-
-            if (this.isCollection(data)) {
-                return this.resolveCollection(data);
-            }
-
-            return this.resolveItem(data);
-        }
-
-        return null;
-    }
-
-    resolveCollection(data) {
-        let thiss = this;
-        let resolved = {};
-
-        if (data.hasOwnProperty('links')) {
-            resolved.links = data.links;
-        }
-
-        if (data.hasOwnProperty('meta')) {
-            resolved.meta = data.meta;
-        }
-
-        resolved.data = _.map(data.data, item => {
-            return thiss.resolveItem(item);
-        });
-
-        return resolved;
-    }
-
-    resolveItem(data) {
-        return this.hydrate(data);
-    }
-
-    hydrate(data) {
-        let model = _.clone(this);
-
-        model.id = data.id;
-        model.type = data.type;
-
-        if (data.hasOwnProperty('getRelations')) {
-            model.relationshipNames = data.relationships;
-        }
-
-        if (data.hasOwnProperty('links')) {
-            model.links = data.links;
-        }
-
-        _.forEach(this.getFields(), field => {
-            model[field] = data[field];
-        });
-
-        _.forEach(this.getDates(), field => {
-            model[field] = moment(data[field]);
-        });
-
-        const thiss = this;
-
-        _.forEach(data.relationships, relationship => {
-            let relation = model.relationships()[relationship];
-
-            if (_.isUndefined(relation)) {
-                throw new Error(`Sarale: Relationship ${relationship} has not been defined in ${model.constructor.name} model.`);
-            }
-
-            if (thiss.isCollection(data[relationship])) {
-                model[relationship] = relation.resolveCollection(data[relationship]);
-            } else {
-                model[relationship] = relation.resolveItem(data[relationship].data);
-            }
-        });
-
-        _.forOwn(model.computed(), (computation, key) => {
-            model[key] = computation(model);
-        });
-
-        return model;
-    }
-
-    // extract data from model
-
-
-    data() {
-        let data = {};
-
-        data.type = this.type;
-
-        if (this.hasOwnProperty('id')) {
-            data.id = this.id;
-        }
-
-        if (this.hasOwnProperty('relationshipNames')) {
-            data.relationships = this.relationshipNames;
-        }
-
-        _.forEach(this.getFields(), field => {
-            if (!_.isUndefined(this[field])) {
-                data[field] = this[field];
-            }
-        });
-
-        _.forEach(this.getDates(), field => {
-            if (!_.isUndefined(this[field])) {
-                data[field] = this[field].format(this.dateFormat());
-            }
-        });
-
-        let thiss = this;
-
-        _.forEach(thiss.getRelations(), (model, relationship) => {
-            if (!_.isUndefined(thiss[relationship])) {
-                if (_.isArray(thiss[relationship].data)) {
-                    data[relationship] = {
-                        data_collection: true,
-                        data: _.map(thiss[relationship].data, relation => {
-                            return relation.data();
-                        }),
-                    };
-                } else {
-                    data[relationship] = {
-                        data: thiss[relationship].data(),
-                    };
-                }
-            }
-        });
-
-        return data;
+    respond(data) {
+        return ResponseHandler.ofJson(this, data);
     }
 
     // helpers
@@ -353,15 +245,7 @@ export default class Model {
     }
 
     isCollection(data) {
-        return data.hasOwnProperty('data_collection') && data.data_collection === true && _.isArray(data.data);
-    }
-
-    deserialize(data) {
-        return formatter.deserialize(data);
-    }
-
-    serialize(data) {
-        return formatter.serialize(data);
+        return _.isArray(data.data);
     }
 
     selfValidate() {
