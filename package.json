@@ -38,9 +38,7 @@
     "bunch-of-exceptions": "0.0.2",
     "date-and-time": "^0.6.2",
     "js-joda": "^1.8.2",
-    "lodash": "^4.17.5",
-    "moment": "^2.20.1",
-    "sarala-json-api-data-formatter": "^0.1.0"
+    "lodash": "^4.17.5"
   },
   "devDependencies": {
     "babel-cli": "^6.26.0",
