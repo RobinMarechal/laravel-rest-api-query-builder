@@ -252,7 +252,7 @@ export default class Model {
         const name = this.getNamespace();
 
         if (name === null || !_.isString(name) || name.length === 0) {
-            throw new Error(`Sarale: Resource name not defined in ${this.constructor.name} model. Implement resourceName method in the ${this.constructor.name} model to resolve this error.`);
+            throw new Error(`LRA Query Builder: Resource name not defined in ${this.constructor.name} model. Implement resourceName method in the ${this.constructor.name} model to resolve this error.`);
         }
     }
 }

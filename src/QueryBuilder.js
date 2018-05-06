@@ -31,7 +31,7 @@ export default class QueryBuilder {
     orderBy(column, direction = 'asc') {
         direction = direction.toLowerCase();
         if (!['asc', 'desc'].includes(direction)) {
-            throw new Error(`Sarale: Invalid sort direction: "${direction}". Allowed only "asc" or "desc" (case insensitive).`);
+            throw new Error(`LRA Query Builder: Invalid sort direction: "${direction}". Allowed only "asc" or "desc" (case insensitive).`);
         }
 
         this.sorts.push({column, direction});
@@ -121,7 +121,12 @@ export default class QueryBuilder {
 
     appendLimit() {
         if (this.limitRows) {
-            this.appendQuery(`limit=${this.limitRows.limit}&offset=${this.limitRows.offset}`);
+            const {limit, offset} = this.limitRows;
+
+            this.appendQuery(`${REST_CONFIG.request_keywords.limit}=${limit}`);
+            if (offset) {
+                this.appendQuery(`${REST_CONFIG.request_keywords.offset}=${offset}`);
+            }
         }
     }
 
