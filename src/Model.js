@@ -1,7 +1,7 @@
 import _ from 'lodash';
 import QueryBuilder from './QueryBuilder';
 import {REST_CONFIG} from './config';
-import {UnimplementedException} from 'bunch-of-exceptions';
+import {UnimplementedException, UnreachableServerException} from 'bunch-of-exceptions';
 import ResponseHandler from './ResponseHandler';
 
 export default class Model {
@@ -37,16 +37,48 @@ export default class Model {
         return REST_CONFIG.base_url;
     }
 
-    async request(config) {
-        const opt = {
-            method: config.method
-        }
+    /**
+     * Make changes or use fetch config before the request
+     * @param fetchConfig the config
+     * @returns the changed fetch config
+     */
+    beforeFetch(fetchConfig) {
+        return fetchConfig;
+    }
 
-        if(config.data && !_.isEmpty(config.data)){
+    /**
+     * Make changes or use fetch response before the jsoning
+     * @param fetchResponse the fetch response
+     * @returns the changed response
+     */
+    afterFetch(fetchResponse) {
+        return fetchResponse;
+    }
+
+    async request(config) {
+        let opt = {
+            method: config.method,
+        };
+
+        if (config.data && !_.isEmpty(config.data)) {
             opt.data = config.data;
         }
 
-        const response = await fetch(config.url, opt);
+        opt = this.beforeFetch(opt);
+
+        let response = await fetch(config.url, opt);
+
+        if (response.status >= 500) {
+            throw new UnreachableServerException(`The server returned HTTP code ${response.status} (${response.statusText})`);
+        }
+
+        if (response.status >= 400) {
+            // TODO: change to InvalidUrlException
+            throw new UnimplementedException(`The server returned HTTP code ${response.status} (${response.statusText})`);
+        }
+
+        response = this.afterFetch(response);
+
         return (await response.json());
     }
 
@@ -234,11 +266,21 @@ export default class Model {
 
     // build model
 
-    respond(data) {
-        return ResponseHandler.ofJson(this, data);
+    /**
+     * Make changes to the received json before the parsing
+     * @param json the json received
+     * @returns the computed json
+     */
+    computeJsonBeforeParsing(json) {
+        return json;
     }
 
-    // helpers
+    respond(json) {
+        json = this.computeJsonBeforeParsing(json);
+        return ResponseHandler.ofJson(this, json);
+    }
+
+    // lib
 
     resourceUrl() {
         return `${this.getBaseUrl()}/${this.getNamespace()}/`;
