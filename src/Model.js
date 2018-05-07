@@ -1,7 +1,7 @@
 import _ from 'lodash';
 import QueryBuilder from './QueryBuilder';
 import {REST_CONFIG} from './config';
-import {UnimplementedException, UnreachableServerExceptionn, InvalidUrlException} from 'bunch-of-exceptions';
+import {UnimplementedException, UnreachableServerException, InvalidUrlException} from 'bunch-of-exceptions';
 import ResponseHandler from './ResponseHandler';
 
 export default class Model {
