@@ -1,7 +1,7 @@
 import _ from 'lodash';
 import QueryBuilder from './QueryBuilder';
 import {REST_CONFIG} from './config';
-import {UnimplementedException, UnreachableServerException} from 'bunch-of-exceptions';
+import {UnimplementedException, UnreachableServerExceptionn, InvalidUrlException} from 'bunch-of-exceptions';
 import ResponseHandler from './ResponseHandler';
 
 export default class Model {
@@ -74,7 +74,7 @@ export default class Model {
 
         if (response.status >= 400) {
             // TODO: change to InvalidUrlException
-            throw new UnimplementedException(`The server returned HTTP code ${response.status} (${response.statusText})`);
+            throw new InvalidUrlException(`The server returned HTTP code ${response.status} (${response.statusText})`);
         }
 
         response = this.afterFetch(response);
