@@ -1,7 +1,7 @@
 import _ from 'lodash';
 import QueryBuilder from './QueryBuilder';
 import {REST_CONFIG} from './config';
-import {UnimplementedException, UnreachableServerException, InvalidUrlException} from 'bunch-of-exceptions';
+import {UnimplementedException, UnreachableServerException, InvalidUrlException, Exception} from 'bunch-of-exceptions';
 import ResponseHandler from './ResponseHandler';
 
 export default class Model {
@@ -82,7 +82,7 @@ export default class Model {
             return (await response.json());
         }
         catch (e) {
-            throw Exception("Fetch failed");
+            throw new Exception("Fetch failed");
         }
     }
 
