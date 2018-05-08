@@ -3,6 +3,7 @@ import QueryBuilder from './QueryBuilder';
 import {REST_CONFIG} from './config';
 import {UnimplementedException, UnreachableServerException, InvalidUrlException} from 'bunch-of-exceptions';
 import ResponseHandler from './ResponseHandler';
+import Exception from '../../exceptions/src/libs/Exception';
 
 export default class Model {
     constructor() {
@@ -66,20 +67,24 @@ export default class Model {
 
         opt = this.beforeFetch(opt);
 
-        let response = await fetch(config.url, opt);
+        try {
+            let response = await fetch(config.url, opt);
 
-        if (response.status >= 500) {
-            throw new UnreachableServerException(`The server returned HTTP code ${response.status} (${response.statusText})`);
+            if (response.status >= 500) {
+                throw new UnreachableServerException(`The server returned HTTP code ${response.status} (${response.statusText})`);
+            }
+
+            if (response.status >= 400) {
+                throw new InvalidUrlException(`The server returned HTTP code ${response.status} (${response.statusText})`);
+            }
+
+            response = this.afterFetch(response);
+
+            return (await response.json());
         }
-
-        if (response.status >= 400) {
-            // TODO: change to InvalidUrlException
-            throw new InvalidUrlException(`The server returned HTTP code ${response.status} (${response.statusText})`);
+        catch (e) {
+            throw Exception("Fetch failed");
         }
-
-        response = this.afterFetch(response);
-
-        return (await response.json());
     }
 
     // requests
