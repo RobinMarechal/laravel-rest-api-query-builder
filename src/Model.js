@@ -69,12 +69,16 @@ export default class Model {
         try {
             let response = await fetch(config.url, opt);
 
-            if (response.status >= 500) {
-                throw new UnreachableServerException(`The server returned HTTP code ${response.status} (${response.statusText})`);
-            }
+            if(!response.ok){
+                if (response.status >= 500) {
+                    throw new UnreachableServerException(`The server returned HTTP code ${response.status} (${response.statusText})`);
+                }
 
-            if (response.status >= 400) {
-                throw new InvalidUrlException(`The server returned HTTP code ${response.status} (${response.statusText})`);
+                if (response.status >= 400) {
+                    throw new InvalidUrlException(`The server returned HTTP code ${response.status} (${response.statusText})`);
+                }
+
+                throw new Exception(`Fetch failed with response: ${response.statusText}`);
             }
 
             response = this.afterFetch(response);
