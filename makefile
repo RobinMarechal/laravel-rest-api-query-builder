@@ -1,7 +1,14 @@
 
-.PHONY: publish remove
+.PHONY: publish remove install build
 
-publish:
+install:
+	npm install
+
+build: install
+	npm run build
+
+publish: build
+	npm run build
 	git tag v$(v)
 	git checkout -b $(v) v$(v)
 	git add .

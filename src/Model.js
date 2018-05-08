@@ -3,7 +3,6 @@ import QueryBuilder from './QueryBuilder';
 import {REST_CONFIG} from './config';
 import {UnimplementedException, UnreachableServerException, InvalidUrlException} from 'bunch-of-exceptions';
 import ResponseHandler from './ResponseHandler';
-import Exception from '../../exceptions/src/libs/Exception';
 
 export default class Model {
     constructor() {
