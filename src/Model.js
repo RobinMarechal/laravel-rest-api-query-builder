@@ -252,7 +252,7 @@ export default class Model {
     }
 
     orderByDesc(column) {
-        return this.orderBy(column, 'desc');
+        return this.orderBy('-' + column);
     }
 
     where(key, operator, value = null) {
