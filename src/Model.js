@@ -1,7 +1,7 @@
 import _ from 'lodash';
 import QueryBuilder from './QueryBuilder';
-import {REST_CONFIG} from './config';
-import {UnimplementedException, UnreachableServerException, InvalidUrlException, Exception} from 'bunch-of-exceptions';
+import { REST_CONFIG } from './config';
+import { UnimplementedException, UnreachableServerException, InvalidUrlException, Exception } from 'bunch-of-exceptions';
 import ResponseHandler from './ResponseHandler';
 
 export default class Model {
@@ -56,9 +56,7 @@ export default class Model {
     }
 
     async request(config) {
-        let opt = {
-            method: config.method,
-        };
+        let opt = { method: config.method };
 
         if (config.data && !_.isEmpty(config.data)) {
             opt.data = config.data;
@@ -69,7 +67,7 @@ export default class Model {
         try {
             let response = await fetch(config.url, opt);
 
-            if(!response.ok){
+            if (!response.ok) {
                 if (response.status >= 500) {
                     throw new UnreachableServerException(`The server returned HTTP code ${response.status} (${response.statusText})`);
                 }
@@ -226,8 +224,23 @@ export default class Model {
         return this;
     }
 
-    orderBy(column, direction = 'asc') {
-        this.queryBuilder.orderBy(column, direction);
+    /**
+     * Order by a list of fields
+     * @param fields the field string, ASC by default. add a '-' ahead to sort in DESC order.
+     * EX: model.orderBy('age', '-name') will order by age ASC, and by name DESC
+     * @returns {Model} this
+     */
+    orderBy(...fields) {
+        for (const field of fields) {
+            let direction = 'ASC';
+            let column = field;
+            if (column[0] === '-') {
+                direction = 'DESC';
+                column = field.substr(1);
+            }
+
+            this.queryBuilder.orderBy(column, direction);
+        }
 
         return this;
     }
