@@ -1,5 +1,6 @@
 import _ from 'lodash';
-import {LocalDateTime, LocalDate, LocalTime} from 'js-joda';
+import { LocalDateTime, LocalDate, LocalTime } from 'js-joda';
+import { QUERY_AWAIT_SINGLE } from './QueryBuilder';
 
 export default class ResponseHandler {
 
@@ -15,7 +16,7 @@ export default class ResponseHandler {
 
     handle() {
         if (_.isEmpty(this.json)) {
-            return null;
+            return this.model.queryBuilder.awaitType == QUERY_AWAIT_SINGLE ? {} : [];
         }
 
         if (_.isArray(this.json)) {

@@ -1,5 +1,8 @@
 import _ from 'lodash';
-import {REST_CONFIG} from './config';
+import { REST_CONFIG } from './config';
+
+export const QUERY_AWAIT_SINGLE = 'QUERY_AWAIT_SINGLE';
+export const QUERY_AWAIT_COLLECTION = 'QUERY_AWAIT_COLLECTION';
 
 export default class QueryBuilder {
     constructor() {
@@ -12,6 +15,7 @@ export default class QueryBuilder {
         this.toDate = null;
         this.selectDistinct = false;
         this.wheres = [];
+        this.awaitType = QUERY_AWAIT_COLLECTION;
     }
 
     with(...resourceName) {
@@ -21,7 +25,7 @@ export default class QueryBuilder {
     }
 
     limit(limit, offset) {
-        this.limitRows = {limit, offset};
+        this.limitRows = { limit, offset };
     }
 
     paginate(perPage = 10, pageNumber = 1) {
@@ -34,7 +38,7 @@ export default class QueryBuilder {
             throw new Error(`LRA Query Builder: Invalid sort direction: "${direction}". Allowed only "asc" or "desc" (case insensitive).`);
         }
 
-        this.sorts.push({column, direction});
+        this.sorts.push({ column, direction });
     }
 
     where(key, operator, value) {
@@ -43,7 +47,7 @@ export default class QueryBuilder {
             operator = '=';
         }
 
-        this.wheres.push({key, operator, value});
+        this.wheres.push({ key, operator, value });
     }
 
     select(...fields) {
@@ -114,14 +118,14 @@ export default class QueryBuilder {
 
     appendSort() {
         if (this.sorts.length) {
-            const fieldsArray = this.sorts.map(({column, direction}) => (direction === 'desc' ? '-' : '') + column);
+            const fieldsArray = this.sorts.map(({ column, direction }) => (direction === 'desc' ? '-' : '') + column);
             this.appendQuery(`${REST_CONFIG.request_keywords.order_by}=${fieldsArray.join(',')}`);
         }
     }
 
     appendLimit() {
         if (this.limitRows) {
-            const {limit, offset} = this.limitRows;
+            const { limit, offset } = this.limitRows;
 
             this.appendQuery(`${REST_CONFIG.request_keywords.limit}=${limit}`);
             if (offset) {

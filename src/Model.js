@@ -1,7 +1,7 @@
 import _ from 'lodash';
-import QueryBuilder from './QueryBuilder';
+import QueryBuilder, { QUERY_AWAIT_SINGLE } from './QueryBuilder';
 import { REST_CONFIG } from './config';
-import { UnimplementedException, UnreachableServerException, InvalidUrlException, Exception } from 'bunch-of-exceptions';
+import { Exception, InvalidUrlException, UnimplementedException, UnreachableServerException } from 'bunch-of-exceptions';
 import ResponseHandler from './ResponseHandler';
 
 export default class Model {
@@ -123,6 +123,7 @@ export default class Model {
     }
 
     async find(id) {
+        this.queryBuilder.awaitType = QUERY_AWAIT_SINGLE;
         let response = await this.request({
             url: `${this.resourceUrl()}${id}${this.queryBuilder.getQuery()}`,
             method: REST_CONFIG.http_methods.get,
@@ -152,6 +153,7 @@ export default class Model {
     }
 
     async save() {
+        this.queryBuilder.awaitType = QUERY_AWAIT_SINGLE;
         if (this.hasOwnProperty('id')) {
             return this.update();
         }
@@ -160,6 +162,7 @@ export default class Model {
     }
 
     async create() {
+        this.queryBuilder.awaitType = QUERY_AWAIT_SINGLE;
         let response = await this.request({
             url: this.resourceUrl(),
             method: REST_CONFIG.http_methods.create,
@@ -170,6 +173,7 @@ export default class Model {
     }
 
     async update() {
+        this.queryBuilder.awaitType = QUERY_AWAIT_SINGLE;
         let response = await this.request({
             url: this.links.self,
             method: REST_CONFIG.http_methods.update,
@@ -180,6 +184,7 @@ export default class Model {
     }
 
     async delete() {
+        this.queryBuilder.awaitType = QUERY_AWAIT_SINGLE;
         let response = this.request({
             url: this.links.self,
             method: REST_CONFIG.http_methods.delete,
@@ -189,6 +194,7 @@ export default class Model {
     }
 
     async attach(model, data = null, sync = false) {
+        this.queryBuilder.awaitType = QUERY_AWAIT_SINGLE;
         let queryConfig = {
             url: `${this.getNamespace()}/${this.id}/${model.getNamespace()}/${model.id}${sync ? '?sync=true' : ''}`,
             method: sync ? REST_CONFIG.http_methods.update : REST_CONFIG.http_methods.create,
@@ -204,6 +210,7 @@ export default class Model {
     }
 
     async detach(model) {
+        this.queryBuilder.awaitType = QUERY_AWAIT_SINGLE;
         let response = await this.request({
             url: `${this.getNamespace()}/${this.id}/${model.getNamespace()}/${model.id}`,
             method: REST_CONFIG.http_methods.delete,
@@ -213,6 +220,7 @@ export default class Model {
     }
 
     async sync(model, data) {
+        this.queryBuilder.awaitType = QUERY_AWAIT_SINGLE;
         return this.attach(model, data, true);
     }
 
