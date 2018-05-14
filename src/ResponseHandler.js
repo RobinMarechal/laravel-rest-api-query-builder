@@ -47,10 +47,10 @@ export default class ResponseHandler {
                 instance.relations[prop].loaded = true;
 
                 if (relations[prop].list) {
-                    instance[prop] = this.deserializeArray(json[prop], new relations[prop].constructor);
+                    instance[prop] = this.deserializeArray(json[prop], new relations[prop].class);
                 }
                 else {
-                    instance[prop] = this.deserializeOne(json[prop], new relations[prop].constructor);
+                    instance[prop] = this.deserializeOne(json[prop], new relations[prop].class);
                 }
             }
         }

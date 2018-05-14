@@ -190,14 +190,6 @@ export default class Model {
         }
     }
 
-    loadIntoParentAndReturnGenerated(generated) {
-        if (this.parent) {
-            this.parent.model[this.parent.relation] = generated;
-        }
-
-        return generated;
-    }
-
     async find(id) {
         this.queryBuilder.awaitType = QUERY_AWAIT_SINGLE;
         let response = await this.request({
