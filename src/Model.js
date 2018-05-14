@@ -9,6 +9,11 @@ export default class Model {
         this.queryBuilder = new QueryBuilder();
         this.selfValidate();
         this.type = this.getNamespace();
+
+        this.fields = this.getFields();
+        this.relations = this.getRelations();
+        this.dates = this.getDates();
+        this.namespace = this.getNamespace();
     }
 
     // override
@@ -55,6 +60,55 @@ export default class Model {
         return fetchResponse;
     }
 
+    toJson() {
+        const json = {};
+
+        const fields = this.getFields();
+        const relations = this.getRelations();
+        const relationsName = Object.keys(relations);
+        const dates = this.getDates();
+        const datesName = Object.keys(dates);
+
+        for (const prop in this) {
+            if (fields.includes(prop)) {
+                json[prop] = this[prop];
+            }
+            else if (datesName.includes(prop)) {
+                json[prop] = this[prop].toString();
+                if (json[prop].includes('T')) {
+                    json[prop] = json[prop].replace('T', ' ').replace('Z', '');
+                }
+            }
+            else if (relationsName.includes(prop)) {
+                if (relations[prop].list) {
+                    json[prop] = this[prop].map((one) => one.toJson());
+                }
+                else {
+                    json[prop] = this[prop].toJson();
+                }
+            }
+        }
+
+        return json;
+    }
+
+    async lazyLoad(relation) {
+        if(!this.relations[relation].loaded){
+            try {
+                const newThis = await new this.constructor().with(relation).find(this.id);
+                this[relation] = newThis[relation];
+                this.relations[relation].loaded = true;
+            } catch (e) {
+                console.log(`Lazy loading error. Relation '${relation}' of '${this.constructor.name}'`);
+                this.relations[relation] = [];
+            }
+        }
+
+        return this[relation];
+    }
+
+    // requests
+
     async request(config) {
         let opt = { method: config.method };
 
@@ -86,40 +140,6 @@ export default class Model {
         catch (e) {
             throw new Exception("Fetch failed");
         }
-    }
-
-    // requests
-
-    toJson() {
-        const json = {};
-
-        const fields = this.getFields();
-        const relations = this.getRelations();
-        const relationsName = Object.keys(relations);
-        const dates = this.getDates();
-        const datesName = Object.keys(dates);
-
-        for (const prop in this) {
-            if (fields.includes(prop)) {
-                json[prop] = this[prop];
-            }
-            else if (datesName.includes(prop)) {
-                json[prop] = this[prop].toString();
-                if (json[prop].includes('T')) {
-                    json[prop] = json[prop].replace('T', ' ').replace('Z', '');
-                }
-            }
-            else if (relationsName.includes(prop)) {
-                if (relations[prop].list) {
-                    json[prop] = this[prop].map((one) => one.toJson());
-                }
-                else {
-                    json[prop] = this[prop].toJson();
-                }
-            }
-        }
-
-        return json;
     }
 
     async find(id) {

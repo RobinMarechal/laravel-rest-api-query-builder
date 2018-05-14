@@ -1,7 +1,7 @@
 
 .PHONY: publish remove install build
 
-install:
+install: package.json
 	npm install
 
 build: install

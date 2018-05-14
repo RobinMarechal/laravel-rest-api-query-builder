@@ -42,11 +42,14 @@ export default class ResponseHandler {
                 instance[prop] = json[prop];
             }
             else if (relationNames.includes(prop)) {
+                // Allow future lazy loading
+                instance.relations[prop].loaded = true;
+
                 if (relations[prop].list) {
-                    instance[prop] = this.deserializeArray(json[prop], relations[prop].instance);
+                    instance[prop] = this.deserializeArray(json[prop], new relations[prop].class.constructor());
                 }
                 else {
-                    instance[prop] = this.deserializeOne(json[prop], relations[prop].instance);
+                    instance[prop] = this.deserializeOne(json[prop], relations[prop].class.constructor());
                 }
             }
         }
@@ -59,10 +62,6 @@ export default class ResponseHandler {
     }
 
     newInstanceOf(obj) {
-        // const clone = Object.assign({}, obj);
-        // Object.setPrototypeOf(clone, obj.prototype);
-        // return clone;
-
         return _.clone(obj);
     }
 
