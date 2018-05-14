@@ -113,7 +113,7 @@ export default class Model {
      * To avoid the force reload, use Model#lazyLoad() method
      *
      * @param relations a list of relations to load.
-     * @returns {Promise<*>} formatted loaded relation if single, otherwise returns this.
+     * @returns {Promise<*>} this.
      */
     async forceLazyLoad(...relations){
         if (relations.length > 0) {
@@ -129,10 +129,6 @@ export default class Model {
                 for (const r of relations) {
                     this.relations[r] = [];
                 }
-            }
-
-            if (relations.length == 1) {
-                return this[relations[0]];
             }
         }
 
