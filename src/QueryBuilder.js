@@ -6,6 +6,12 @@ export const QUERY_AWAIT_COLLECTION = 'QUERY_AWAIT_COLLECTION';
 
 export default class QueryBuilder {
     constructor() {
+        this.reset();
+    }
+
+    reset(){
+        this.url = '';
+        this.path = '';
         this.query = '';
         this.relations = [];
         this.sorts = [];
@@ -15,7 +21,16 @@ export default class QueryBuilder {
         this.toDate = null;
         this.selectDistinct = false;
         this.wheres = [];
+        this.owner = null;
+        this.customs = [];
         this.awaitType = QUERY_AWAIT_COLLECTION;
+    }
+
+    relationOf(namespace, id) {
+        this.owner = {
+            namespace,
+            id,
+        };
     }
 
     with(...resourceName) {
@@ -66,75 +81,111 @@ export default class QueryBuilder {
         this.to = date;
     }
 
-    getQuery() {
-        this.appendIncludes();
-        this.appendLimit();
-        this.appendSort();
-        this.appendFromTo();
-        this.appendFields();
-        this.appendWheres();
-        this.appendDistinct();
-
-        if (this.query.length) {
-            this.query = `?${this.query}`;
-        }
-
-        return this.query;
+    addCustomParameter(key, value) {
+        this.customs.push({ key, value });
     }
 
-    appendDistinct() {
+    buildUrl(namespace, id) {
+        this._setPath(namespace, id);
+
+        this._appendQuery();
+
+        return this.path + this.query;
+    }
+
+    _setPath(namespace, id) {
+        this.path = REST_CONFIG.base_url;
+        this._appendOwner();
+        this._appendNamespace(namespace, id);
+    }
+
+    _appendOwner() {
+        if (this.owner && this.owner.namespace && this.owner.id) {
+            this.path += `/${this.owner.namespace}/${this.owner.id}`;
+        }
+    }
+
+    _appendNamespace(namespace, id) {
+        this.path += `/${namespace}`;
+        if (id) {
+            this.path += `/${id}`;
+        }
+    }
+
+    _appendDistinct() {
         if (this.selectDistinct) {
-            this.appendQuery(`${REST_CONFIG.request_keywords.selectDistinct}=${this.selectDistinct}`);
+            this._append(`${REST_CONFIG.request_keywords.selectDistinct}=${this.selectDistinct}`);
         }
     }
 
-    appendFromTo() {
+    _appendFromTo() {
         if (this.fromDate) {
-            this.appendQuery(`${REST_CONFIG.request_keywords.from}=${this.fromDate}`);
+            this._append(`${REST_CONFIG.request_keywords.from}=${this.fromDate}`);
         }
 
         if (this.toDate) {
-            this.appendQuery(`${REST_CONFIG.request_keywords.to}=${this.toDate}`);
+            this._append(`${REST_CONFIG.request_keywords.to}=${this.toDate}`);
         }
     }
 
-    appendWheres() {
+    _appendWheres() {
         for (const where of this.wheres) {
-            this.appendQuery(`${REST_CONFIG.request_keywords.where}[]=${where.key},${where.operator},${where.value}`);
+            this._append(`${REST_CONFIG.request_keywords.where}[]=${where.key},${where.operator},${where.value}`);
         }
     }
 
-    appendIncludes() {
+    _appendIncludes() {
         if (this.relations.length) {
-            this.appendQuery(`${REST_CONFIG.request_keywords.load_relations}=${this.relations.join(',')}`);
+            this._append(`${REST_CONFIG.request_keywords.load_relations}=${this.relations.join(',')}`);
         }
     }
 
-    appendFields() {
+    _appendFields() {
         if (this.fields.length) {
-            this.appendQuery(`${REST_CONFIG.request_keywords.select_fields}=${this.fields.join(',')}`);
+            this._append(`${REST_CONFIG.request_keywords.select_fields}=${this.fields.join(',')}`);
         }
     }
 
-    appendSort() {
+    _appendSort() {
         if (this.sorts.length) {
             const fieldsArray = this.sorts.map(({ column, direction }) => (direction === 'desc' ? '-' : '') + column);
-            this.appendQuery(`${REST_CONFIG.request_keywords.order_by}=${fieldsArray.join(',')}`);
+            this._append(`${REST_CONFIG.request_keywords.order_by}=${fieldsArray.join(',')}`);
         }
     }
 
-    appendLimit() {
+    _appendLimit() {
         if (this.limitRows) {
             const { limit, offset } = this.limitRows;
 
-            this.appendQuery(`${REST_CONFIG.request_keywords.limit}=${limit}`);
+            this._append(`${REST_CONFIG.request_keywords.limit}=${limit}`);
             if (offset) {
-                this.appendQuery(`${REST_CONFIG.request_keywords.offset}=${offset}`);
+                this._append(`${REST_CONFIG.request_keywords.offset}=${offset}`);
             }
         }
     }
 
-    appendQuery(append) {
+    _appendCustoms() {
+        for (const { key, value } of this.customs) {
+            this._append(`${key}=${value}`);
+        }
+    }
+
+    _appendQuery() {
+        this._appendIncludes();
+        this._appendLimit();
+        this._appendSort();
+        this._appendFromTo();
+        this._appendFields();
+        this._appendWheres();
+        this._appendDistinct();
+        this._appendCustoms();
+
+        if (this.query.length) {
+            this.query = `?${this.query}`;
+        }
+    }
+
+    _append(append) {
         if (this.query.length) {
             append = `&${append}`;
         }

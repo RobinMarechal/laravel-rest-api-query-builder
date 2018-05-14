@@ -177,6 +177,8 @@ export default class Model {
     async request(config) {
         let opt = { method: config.method };
 
+        this.queryBuilder.reset();
+
         if (config.data && !_.isEmpty(config.data)) {
             opt.data = config.data;
         }
@@ -210,7 +212,7 @@ export default class Model {
     async find(id) {
         this.queryBuilder.awaitType = QUERY_AWAIT_SINGLE;
         let response = await this.request({
-            url: `${this.resourceUrl()}${id}${this.queryBuilder.getQuery()}`,
+            url: this.queryBuilder.buildUrl(this.namespace, id),
             method: REST_CONFIG.http_methods.get,
         });
 
@@ -219,7 +221,7 @@ export default class Model {
 
     async all() {
         let response = await this.request({
-            url: `${this.resourceUrl()}${this.queryBuilder.getQuery()}`,
+            url: this.queryBuilder.buildUrl(this.namespace),
             method: REST_CONFIG.http_methods.get,
         });
 
@@ -230,7 +232,7 @@ export default class Model {
         this.queryBuilder.paginate(perPage, page);
 
         let response = await this.request({
-            url: `${this.resourceUrl()}${this.queryBuilder.getQuery()}`,
+            url: this.queryBuilder.buildUrl(this.namespace),
             method: REST_CONFIG.http_methods.get,
         });
 
@@ -243,13 +245,13 @@ export default class Model {
             return this.update();
         }
 
-        return this.respond(response.data);
+        return this.create();
     }
 
     async create() {
         this.queryBuilder.awaitType = QUERY_AWAIT_SINGLE;
         let response = await this.request({
-            url: this.resourceUrl(),
+            url: this.queryBuilder.buildUrl(this.namespace),
             method: REST_CONFIG.http_methods.create,
             data: this.toJson(),
         });
@@ -260,7 +262,7 @@ export default class Model {
     async update() {
         this.queryBuilder.awaitType = QUERY_AWAIT_SINGLE;
         let response = await this.request({
-            url: this.links.self,
+            url: this.queryBuilder.buildUrl(this.namespace, this.id),
             method: REST_CONFIG.http_methods.update,
             data: this.toJson(),
         });
@@ -271,7 +273,7 @@ export default class Model {
     async delete() {
         this.queryBuilder.awaitType = QUERY_AWAIT_SINGLE;
         let response = this.request({
-            url: this.links.self,
+            url: this.queryBuilder.buildUrl(this.namespace, this.id),
             method: REST_CONFIG.http_methods.delete,
         });
 
@@ -280,8 +282,14 @@ export default class Model {
 
     async attach(model, data = null, sync = false) {
         this.queryBuilder.awaitType = QUERY_AWAIT_SINGLE;
+
+        this.relationOfModel(this);
+        if(sync){
+            this.queryBuilder.addCustomParameter(REST_CONFIG.request_keywords.sync, 'true');
+        }
+
         let queryConfig = {
-            url: `${this.getNamespace()}/${this.id}/${model.getNamespace()}/${model.id}${sync ? '?sync=true' : ''}`,
+            url: this.queryBuilder.buildUrl(model.namespace, model.id),
             method: sync ? REST_CONFIG.http_methods.update : REST_CONFIG.http_methods.create,
         };
 
@@ -296,8 +304,11 @@ export default class Model {
 
     async detach(model) {
         this.queryBuilder.awaitType = QUERY_AWAIT_SINGLE;
+
+        this.relationOfModel(this);
+
         let response = await this.request({
-            url: `${this.getNamespace()}/${this.id}/${model.getNamespace()}/${model.id}`,
+            url: this.queryBuilder.buildUrl(model.namespace, model.id),
             method: REST_CONFIG.http_methods.delete,
         });
 
@@ -309,13 +320,69 @@ export default class Model {
         return this.attach(model, data, true);
     }
 
-    // modify query string
+    // modify url string
 
-    with(...resourceName) {
-        this.queryBuilder.with(...resourceName);
+    /**
+     * Load model with some relations
+     * @param {string} relation the name of the relation
+     * @returns {Model} this
+     */
+    with(...relation) {
+        this.queryBuilder.with(...relation);
 
         return this;
     }
+
+    /**
+     * Load as a relation of another model <br/>
+     * @note See Model#relationOf if you want to use the namespace and the id
+     * @param {Model} model the owner
+     * @return {Model} this
+     */
+    relationOfModel(model) {
+        return this.relationOf(model.namespace, model.id);
+    }
+
+    /**
+     * @note See Model#relationOfModel if you have an instance of a Model
+     * @param {string} namespace the url namespace of the owner. <br/>
+     * @example If the url should be'.../api/users/2/posts' => namespace is 'users'
+     * @param id the owner's id
+     * @return {Model} this
+     */
+    relationOf(namespace, id) {
+        if (namespace instanceof Model) {
+            return this.relationOfModel(namespace);
+        }
+
+        this.queryBuilder.relationOf(namespace, id);
+
+        return this;
+    }
+
+
+    /**
+     * @note See Model#relationOfModel if you have an instance of a Model
+     * @param {string} namespace the url namespace of the owner. <br/>
+     * @example If the url should be'.../api/users/2/posts' => namespace is 'users'
+     * @param id the owner's id
+     * @return {Model} this
+     */
+    of(namespace, id){
+        return this.relationOf(namespace, id);
+    }
+
+
+    /**
+     * Load as a relation of another model <br/>
+     * @note See Model#relationOf if you want to use the namespace and the id
+     * @param {Model} model the owner
+     * @return {Model} this
+     */
+    ofModel(model){
+        return this.relationOfModel(model);
+    }
+
 
     /**
      * Order by a list of fields

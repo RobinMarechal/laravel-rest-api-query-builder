@@ -22,5 +22,6 @@ export const REST_CONFIG = {
         where: 'where',
         distinct: 'selectDistinct',
         get_all: 'all',
+        sync: 'sync',
     },
 };
