@@ -145,7 +145,7 @@ export default class Model {
                     this.relations[r].loaded = true;
                 }
             } catch (e) {
-                console.error(`Lazy loading error. Relation '${relations}' of '${this.constructor.name}':`);
+                console.error(`Lazy loading error. Relation '${relations.join("', '")}' of '${this.constructor.name}':`);
                 console.error(e);
                 for (const r of relations) {
                     this.relations[r] = [];
