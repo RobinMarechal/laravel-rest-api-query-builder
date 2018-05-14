@@ -94,12 +94,33 @@ export default class Model {
         return json;
     }
 
+
+    /**
+     * Force Lazy loading of a relation to the model and returns the loaded relation
+     * @param {string} relation the relation to load and to retrieve
+     * @returns {Promise<*>} the loaded relation
+     */
+    async forceLazyLoadAndGet(relation) {
+        await this.forceLazyLoad(relation);
+        return this[relation];
+    }
+
+    /**
+     * Lazy loads a relation to the model and returns the loaded relation
+     * @param {string} relation the relation to load and to retrieve
+     * @returns {Promise<*>} the loaded relation
+     */
+    async lazyLoadAndGet(relation) {
+        await this.lazyLoad(relation);
+        return this[relation];
+    }
+
     /**
      * Lazy loads relations to the model.
      * Does not load already loaded relations.
      * To force the load, use Model#forceLazyLoad() method
      *
-     * @param relations a list of relations to load. The function doesn't reload an already loaded relation.
+     * @param {...string} relations a list of relations to load. The function doesn't reload an already loaded relation.
      * @returns {Promise<*>} formatted loaded relation if single, otherwise returns this.
      */
     async lazyLoad(...relations) {
@@ -112,10 +133,10 @@ export default class Model {
      * This function FORCE all relations to be loaded, even the already loaded ones.
      * To avoid the force reload, use Model#lazyLoad() method
      *
-     * @param relations a list of relations to load.
+     * @param {...string} relations a list of relations to load.
      * @returns {Promise<*>} this.
      */
-    async forceLazyLoad(...relations){
+    async forceLazyLoad(...relations) {
         if (relations.length > 0) {
             try {
                 const newThis = await new this.constructor().with(...relations).find(this.id);
@@ -137,13 +158,13 @@ export default class Model {
 
     /**
      * Filter the relations that have already been loaded.
-     * @param relations the model's relations
-     * @returns {Array} the filtered relations (that haven't been loaded yet)
+     * @param {string} relations the model's relations
+     * @returns {array} the filtered relations (that haven't been loaded yet)
      */
-    filterLoadedRelations(...relations){
+    filterLoadedRelations(...relations) {
         const arr = [];
-        for(const r of relations){
-            if(!this.relations[r].loaded){
+        for (const r of relations) {
+            if (!this.relations[r].loaded) {
                 arr.push(r);
             }
         }
