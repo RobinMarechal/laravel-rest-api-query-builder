@@ -27,6 +27,7 @@ export default class ResponseHandler {
     }
 
     deserializeOne(json, model) {
+        // console.log('json', json);
         const instance = this.newInstanceOf(model);
         const dates = instance.getDates();
         const dateNames = Object.keys(dates);
@@ -46,10 +47,10 @@ export default class ResponseHandler {
                 instance.relations[prop].loaded = true;
 
                 if (relations[prop].list) {
-                    instance[prop] = this.deserializeArray(json[prop], new relations[prop].class.constructor());
+                    instance[prop] = this.deserializeArray(json[prop], new relations[prop].constructor);
                 }
                 else {
-                    instance[prop] = this.deserializeOne(json[prop], relations[prop].class.constructor());
+                    instance[prop] = this.deserializeOne(json[prop], new relations[prop].constructor);
                 }
             }
         }

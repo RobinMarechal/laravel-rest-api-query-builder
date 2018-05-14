@@ -38,14 +38,14 @@ export default class BaseModel extends Model
 }
 ```
 
-##### app/models/Post.js
+##### app/models/Customer.jsr.js
 ```javascript
 import Model from './BaseModel';
 import Comment from './Comment';
 import Tag from './Tag';
-import User from './User';
+import Order fromOrderr';
 
-export default class Post extends Model {
+export default class Customer extends Model {
     getNamespace () {
         return 'posts';
     }
@@ -60,7 +60,7 @@ export default class Post extends Model {
 
     getRelations () {
         return {
-            author: new User(),
+            author: new Order(),
             comments: new Comment(),
             tags: new Tag()
         };
@@ -98,11 +98,11 @@ export default class Tag extends Model {
 ## Fetching data
 
 ```javascript
-import Post from './../models/Post';
+import Customer from Customer;
 
-const post = new Post();
+coCustomerpost = new Post();
 
-// makes a GET request to https://sarala-demo.app/api/posts/{id}
+/Customerkes a GET request to https://sarala-demo.app/api/posts/{id}
 const findPost = async (id) => {
     let post = await post.find(id);
 };

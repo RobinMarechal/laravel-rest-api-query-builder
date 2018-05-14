@@ -10,6 +10,8 @@ export default class Model {
         this.selfValidate();
         this.type = this.getNamespace();
 
+        this.parent = null;
+
         this.fields = this.getFields();
         this.relations = this.getRelations();
         this.dates = this.getDates();
@@ -92,19 +94,65 @@ export default class Model {
         return json;
     }
 
-    async lazyLoad(relation) {
-        if(!this.relations[relation].loaded){
+    /**
+     * Lazy loads relations to the model.
+     * Does not load already loaded relations.
+     * To force the load, use Model#forceLazyLoad() method
+     *
+     * @param relations a list of relations to load. The function doesn't reload an already loaded relation.
+     * @returns {Promise<*>} formatted loaded relation if single, otherwise returns this.
+     */
+    async lazyLoad(...relations) {
+        relations = this.filterLoadedRelations(...relations);
+        return this.forceLazyLoad(...relations);
+    }
+
+    /**
+     * Lazy loads relations to the model.
+     * This function FORCE all relations to be loaded, even the already loaded ones.
+     * To avoid the force reload, use Model#lazyLoad() method
+     *
+     * @param relations a list of relations to load.
+     * @returns {Promise<*>} formatted loaded relation if single, otherwise returns this.
+     */
+    async forceLazyLoad(...relations){
+        if (relations.length > 0) {
             try {
-                const newThis = await new this.constructor().with(relation).find(this.id);
-                this[relation] = newThis[relation];
-                this.relations[relation].loaded = true;
+                const newThis = await new this.constructor().with(...relations).find(this.id);
+                for (const r of relations) {
+                    this[r] = newThis[r];
+                    this.relations[r].loaded = true;
+                }
             } catch (e) {
-                console.log(`Lazy loading error. Relation '${relation}' of '${this.constructor.name}'`);
-                this.relations[relation] = [];
+                console.error(`Lazy loading error. Relation '${relations}' of '${this.constructor.name}':`);
+                console.error(e);
+                for (const r of relations) {
+                    this.relations[r] = [];
+                }
+            }
+
+            if (relations.length == 1) {
+                return this[relations[0]];
             }
         }
 
-        return this[relation];
+        return this;
+    }
+
+    /**
+     * Filter the relations that have already been loaded.
+     * @param relations the model's relations
+     * @returns {Array} the filtered relations (that haven't been loaded yet)
+     */
+    filterLoadedRelations(...relations){
+        const arr = [];
+        for(const r of relations){
+            if(!this.relations[r].loaded){
+                arr.push(r);
+            }
+        }
+
+        return arr;
     }
 
     // requests
@@ -140,6 +188,14 @@ export default class Model {
         catch (e) {
             throw new Exception("Fetch failed");
         }
+    }
+
+    loadIntoParentAndReturnGenerated(generated) {
+        if (this.parent) {
+            this.parent.model[this.parent.relation] = generated;
+        }
+
+        return generated;
     }
 
     async find(id) {
@@ -178,7 +234,7 @@ export default class Model {
             return this.update();
         }
 
-        return this.create();
+        return this.respond(response.data);
     }
 
     async create() {
