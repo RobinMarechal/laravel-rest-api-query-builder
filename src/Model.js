@@ -10,7 +10,8 @@ export default class Model {
         this.selfValidate();
         this.type = this.getNamespace();
 
-        this.parent = null;
+
+        this.owner = null;
 
         this.fields = this.getFields();
         this.relations = this.getRelations();
@@ -209,10 +210,25 @@ export default class Model {
         }
     }
 
+    _getUrlFunctionOfId(id){
+        if (id) {
+            return this.queryBuilder.buildUrl(this.namespace, id);
+        } else {
+            const snakeCase = this.constructor.name
+                                  .replace(/([A-Z]+)/g, (x, y) => "_" + y.toLowerCase())
+                                  .replace(/^_/, "");
+
+            return this.queryBuilder.buildUrl(snakeCase);
+        }
+    }
+
     async find(id) {
         this.queryBuilder.awaitType = QUERY_AWAIT_SINGLE;
+
+        let url = this._getUrlFunctionOfId(id);
+
         let response = await this.request({
-            url: this.queryBuilder.buildUrl(this.namespace, id),
+            url: this.queryBuilder.buildUrl(this.namespace),
             method: REST_CONFIG.http_methods.get,
         });
 
@@ -261,6 +277,7 @@ export default class Model {
 
     async update() {
         this.queryBuilder.awaitType = QUERY_AWAIT_SINGLE;
+
         let response = await this.request({
             url: this.queryBuilder.buildUrl(this.namespace, this.id),
             method: REST_CONFIG.http_methods.update,
@@ -284,7 +301,7 @@ export default class Model {
         this.queryBuilder.awaitType = QUERY_AWAIT_SINGLE;
 
         this.relationOfModel(this);
-        if(sync){
+        if (sync) {
             this.queryBuilder.addCustomParameter(REST_CONFIG.request_keywords.sync, 'true');
         }
 
@@ -340,22 +357,27 @@ export default class Model {
      * @return {Model} this
      */
     relationOfModel(model) {
-        return this.relationOf(model.namespace, model.id);
+        return this.relationOf(model.constructor, model.id);
     }
 
     /**
      * @note See Model#relationOfModel if you have an instance of a Model
-     * @param {string} namespace the url namespace of the owner. <br/>
-     * @example If the url should be'.../api/users/2/posts' => namespace is 'users'
+     * @param {constructor} constructor the url constructor of the owner. <br/>
+     * @example If the url should be'.../api/users/2/posts' => constructor is 'users'
      * @param id the owner's id
      * @return {Model} this
      */
-    relationOf(namespace, id) {
-        if (namespace instanceof Model) {
-            return this.relationOfModel(namespace);
+    relationOf(constructor, id) {
+        if (constructor instanceof Model) {
+            constructor = constructor.constructor;
         }
 
-        this.queryBuilder.relationOf(namespace, id);
+        this.owner = {
+            constructor,
+            id,
+        };
+
+        this.queryBuilder.relationOf(new constructor().namespace, id);
 
         return this;
     }
@@ -363,13 +385,13 @@ export default class Model {
 
     /**
      * @note See Model#relationOfModel if you have an instance of a Model
-     * @param {string} namespace the url namespace of the owner. <br/>
+     * @param {constructor} constructor the url namespace of the owner. <br/>
      * @example If the url should be'.../api/users/2/posts' => namespace is 'users'
      * @param id the owner's id
      * @return {Model} this
      */
-    of(namespace, id){
-        return this.relationOf(namespace, id);
+    of(constructor, id) {
+        return this.relationOf(constructor, id);
     }
 
 
@@ -379,7 +401,7 @@ export default class Model {
      * @param {Model} model the owner
      * @return {Model} this
      */
-    ofModel(model){
+    ofModel(model) {
         return this.relationOfModel(model);
     }
 
