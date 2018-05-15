@@ -9,9 +9,9 @@ build: install
 
 publish: build
 	npm run build
+	git add .
 	git tag v$(v)
 	git checkout -b $(v) v$(v)
-	git add .
 	git commit -m "$(m)"
 	git push origin $(v)
 	git push --tag
