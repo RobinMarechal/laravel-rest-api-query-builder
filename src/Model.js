@@ -369,6 +369,7 @@ export default class Model {
      */
     relationOf(constructor, id) {
         if (constructor instanceof Model) {
+            id = constructor.id;
             constructor = constructor.constructor;
         }
 
