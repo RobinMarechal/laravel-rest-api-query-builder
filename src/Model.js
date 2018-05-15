@@ -228,7 +228,7 @@ export default class Model {
         let url = this._getUrlFunctionOfId(id);
 
         let response = await this.request({
-            url: this.queryBuilder.buildUrl(this.namespace),
+            url,
             method: REST_CONFIG.http_methods.get,
         });
 
