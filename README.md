@@ -43,7 +43,7 @@ export default class BaseModel extends Model
 import Model from './BaseModel';
 import Comment from './Comment';
 import Tag from './Tag';
-import Order fromOrderr';
+import Order from './Order';
 
 export default class Customer extends Model {
     getNamespace () {
