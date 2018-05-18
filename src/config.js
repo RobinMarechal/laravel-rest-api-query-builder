@@ -3,6 +3,8 @@ export const REST_CONFIG = {
 
     default_temporal_field: 'created_at',
 
+    cross_origin: false,
+
     http_methods: {
         get: 'GET',
         create: 'POST',
@@ -22,6 +24,6 @@ export const REST_CONFIG = {
         where: 'where',
         distinct: 'selectDistinct',
         get_all: 'all',
-        sync: 'sync',
+        sync_without_detaching: 'sync_without_detaching'
     },
 };

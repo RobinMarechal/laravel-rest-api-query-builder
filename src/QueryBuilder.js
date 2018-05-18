@@ -136,7 +136,7 @@ export default class QueryBuilder {
 
     _appendIncludes() {
         if (this.relations.length) {
-            this._append(`${REST_CONFIG.request_keywords.load_relations}=${this.relations.join(',')}`);
+            this._append(`${REST_CONFIG.request_keywords.load_relations}=${this.relations.join(';')}`);
         }
     }
 

@@ -175,42 +175,39 @@ export default class Model {
 
     // requests
 
-    async request(config) {
-        let opt = { method: config.method };
-
+    async request(url, config) {
         this.queryBuilder.reset();
 
-        if (config.data && !_.isEmpty(config.data)) {
-            opt.data = config.data;
+        config.headers = {
+            "Content-Type": 'application/json',
+        };
+
+        if (REST_CONFIG.cross_origin) {
+            config.mode = 'cors';
         }
 
-        opt = this.beforeFetch(opt);
+        config = this.beforeFetch(config);
 
-        try {
-            let response = await fetch(config.url, opt);
+        let response = await fetch(url, config);
 
-            if (!response.ok) {
-                if (response.status >= 500) {
-                    throw new UnreachableServerException(`The server returned HTTP code ${response.status} (${response.statusText})`);
-                }
-
-                if (response.status >= 400) {
-                    throw new InvalidUrlException(`The server returned HTTP code ${response.status} (${response.statusText})`);
-                }
-
-                throw new Exception(`Fetch failed with response: ${response.statusText}`);
+        if (!response.ok) {
+            if (response.status >= 500) {
+                throw new UnreachableServerException(`The server returned HTTP code ${response.status} (${response.statusText})`);
             }
 
-            response = this.afterFetch(response);
+            if (response.status >= 400) {
+                throw new InvalidUrlException(`The server returned HTTP code ${response.status} (${response.statusText})`);
+            }
 
-            return (await response.json());
+            throw new Exception(`Fetch failed with response: ${response.statusText}`);
         }
-        catch (e) {
-            throw new Exception("Fetch failed");
-        }
+
+        response = this.afterFetch(response);
+
+        return (await response.json());
     }
 
-    _getUrlFunctionOfId(id){
+    _getUrlFunctionOfId(id) {
         if (id) {
             return this.queryBuilder.buildUrl(this.namespace, id);
         } else {
@@ -227,8 +224,7 @@ export default class Model {
 
         let url = this._getUrlFunctionOfId(id);
 
-        let response = await this.request({
-            url,
+        let response = await this.request(url, {
             method: REST_CONFIG.http_methods.get,
         });
 
@@ -236,8 +232,8 @@ export default class Model {
     }
 
     async all() {
-        let response = await this.request({
-            url: this.queryBuilder.buildUrl(this.namespace),
+        const url = this.queryBuilder.buildUrl(this.namespace);
+        let response = await this.request(url, {
             method: REST_CONFIG.http_methods.get,
         });
 
@@ -247,8 +243,8 @@ export default class Model {
     async paginate(perPage = 10, page = 1) {
         this.queryBuilder.paginate(perPage, page);
 
-        let response = await this.request({
-            url: this.queryBuilder.buildUrl(this.namespace),
+        const url = this.queryBuilder.buildUrl(this.namespace);
+        let response = await this.request(url, {
             method: REST_CONFIG.http_methods.get,
         });
 
@@ -266,10 +262,11 @@ export default class Model {
 
     async create() {
         this.queryBuilder.awaitType = QUERY_AWAIT_SINGLE;
-        let response = await this.request({
-            url: this.queryBuilder.buildUrl(this.namespace),
+
+        const url = this.queryBuilder.buildUrl(this.namespace);
+        let response = await this.request(url, {
             method: REST_CONFIG.http_methods.create,
-            data: this.toJson(),
+            body: JSON.stringify(this.toJson()),
         });
 
         return this.respond(response.data);
@@ -278,10 +275,10 @@ export default class Model {
     async update() {
         this.queryBuilder.awaitType = QUERY_AWAIT_SINGLE;
 
-        let response = await this.request({
-            url: this.queryBuilder.buildUrl(this.namespace, this.id),
+        const url = this.queryBuilder.buildUrl(this.namespace, this.id);
+        let response = await this.request(url, {
             method: REST_CONFIG.http_methods.update,
-            data: this.toJson(),
+            body: JSON.stringify(this.toJson()),
         });
 
         return this.respond(response.data);
@@ -289,34 +286,39 @@ export default class Model {
 
     async delete() {
         this.queryBuilder.awaitType = QUERY_AWAIT_SINGLE;
-        let response = this.request({
-            url: this.queryBuilder.buildUrl(this.namespace, this.id),
+
+        const url = this.queryBuilder.buildUrl(this.namespace, this.id);
+        let response = this.request(url, {
             method: REST_CONFIG.http_methods.delete,
         });
 
         return this.respond(response.data);
     }
 
-    async attach(model, data = null, sync = false) {
+    async attach(model, body = null, sync = false) {
         this.queryBuilder.awaitType = QUERY_AWAIT_SINGLE;
 
         this.relationOfModel(this);
-        if (sync) {
-            this.queryBuilder.addCustomParameter(REST_CONFIG.request_keywords.sync, 'true');
-        }
-
-        let queryConfig = {
-            url: this.queryBuilder.buildUrl(model.namespace, model.id),
+        const url = this.queryBuilder.buildUrl(model.namespace, model.id);
+        const queryConfig = {
             method: sync ? REST_CONFIG.http_methods.update : REST_CONFIG.http_methods.create,
         };
 
-        if (data) {
-            queryConfig.data = data;
+        if (body) {
+            queryConfig.body = JSON.stringify(body);
         }
 
-        let response = await this.request(queryConfig);
+        let response = await this.request(url, queryConfig);
 
         return this.respond(response.data);
+    }
+
+    async sync(model, data, detaching = true) {
+        this.queryBuilder.awaitType = QUERY_AWAIT_SINGLE;
+        if (!detaching) {
+            this.queryBuilder.addCustomParameter(REST_CONFIG.request_keywords.sync_detaching, detaching);
+        }
+        return this.attach(model, data, true);
     }
 
     async detach(model) {
@@ -324,17 +326,12 @@ export default class Model {
 
         this.relationOfModel(this);
 
-        let response = await this.request({
-            url: this.queryBuilder.buildUrl(model.namespace, model.id),
+        const url = this.queryBuilder.buildUrl(model.namespace, model.id);
+        let response = await this.request(url, {
             method: REST_CONFIG.http_methods.delete,
         });
 
         return this.respond(response.data);
-    }
-
-    async sync(model, data) {
-        this.queryBuilder.awaitType = QUERY_AWAIT_SINGLE;
-        return this.attach(model, data, true);
     }
 
     // modify url string
@@ -498,7 +495,8 @@ export default class Model {
         const name = this.getNamespace();
 
         if (name === null || !_.isString(name) || name.length === 0) {
-            throw new Error(`LRA Query Builder: Resource name not defined in ${this.constructor.name} model. Implement resourceName method in the ${this.constructor.name} model to resolve this error.`);
+            throw new Error(
+                `LRA Query Builder: Resource name not defined in ${this.constructor.name} model. Implement resourceName method in the ${this.constructor.name} model to resolve this error.`);
         }
     }
 }
