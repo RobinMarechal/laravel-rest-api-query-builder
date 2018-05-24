@@ -53,6 +53,9 @@ export default class ResponseHandler {
                     instance[prop] = this.deserializeOne(json[prop], new relations[prop].class);
                 }
             }
+            else if (prop === 'pivot') {
+                instance[prop] = json[prop];
+            }
         }
 
         return instance;

@@ -74,11 +74,11 @@ export default class QueryBuilder {
     }
 
     from(date) {
-        this.from = date;
+        this.fromDate = date;
     }
 
     to(date) {
-        this.to = date;
+        this.toDate = date;
     }
 
     addCustomParameter(key, value) {

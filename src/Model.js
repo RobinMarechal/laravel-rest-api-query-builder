@@ -442,7 +442,7 @@ export default class Model {
     }
 
     from(date) {
-        this.queryBuilder(date);
+        this.queryBuilder.from(date);
 
         return this;
     }
