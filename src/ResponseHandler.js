@@ -71,7 +71,10 @@ export default class ResponseHandler {
 
     dateFromString(dateType, dateString) {
 
-        if (dateType === 'datetime') {
+        if(dateString === null){
+            return null;
+        }
+        else if (dateType === 'datetime') {
             dateString = dateString.replace('T', ' ');
             dateString = dateString.replace('Z', '');
 
