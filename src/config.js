@@ -1,5 +1,8 @@
+
+const baseUrl = window.location ? window.location.href : "http://myserver.ext"
+
 export const REST_CONFIG = {
-    base_url: window.location.href + '/api',
+    base_url: baseUrl + '/api',
 
     default_temporal_field: 'created_at',
 
