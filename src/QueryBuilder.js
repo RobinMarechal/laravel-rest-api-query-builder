@@ -193,7 +193,7 @@ export default class QueryBuilder {
 
     _appendSort () {
         if (this.sorts.length) {
-            const fieldsArray = this.sorts.map(({column, direction}) => (direction === 'desc' ? '-' : '') + column);
+            const fieldsArray = this.sorts.map(({column, direction}) => (direction === 'DESC' ? '-' : '') + column);
             this._append(`${this.REST_CONFIG.request_keywords.order_by}=${fieldsArray.join(',')}`);
         }
     }
