@@ -139,7 +139,7 @@ export default class QueryBuilder {
     }
 
     _setPath (namespace, id) {
-        this.path = this.REST_CONFIG.base_url;
+        this.path = this.emptyModel.getBaseUrl();
         this._appendOwner();
         this._appendNamespace(namespace, id);
     }
