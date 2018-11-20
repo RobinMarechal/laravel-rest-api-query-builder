@@ -1,22 +1,22 @@
 import _ from 'lodash';
-import Model from "./Model";
-import UnreachableServerException from "bunch-of-exceptions/build/exceptions/UnreachableServerException";
-import InvalidUrlException from "bunch-of-exceptions/build/exceptions/InvalidUrlException";
-import Exception from "bunch-of-exceptions/build/libs/Exception";
-import ResponseHandler from "./ResponseHandler";
+import Model from './Model';
+import UnreachableServerException from 'bunch-of-exceptions/build/exceptions/UnreachableServerException';
+import InvalidUrlException from 'bunch-of-exceptions/build/exceptions/InvalidUrlException';
+import Exception from 'bunch-of-exceptions/build/libs/Exception';
+import ResponseHandler from './ResponseHandler';
 
 export const QUERY_AWAIT_SINGLE = 'QUERY_AWAIT_SINGLE';
 export const QUERY_AWAIT_COLLECTION = 'QUERY_AWAIT_COLLECTION';
 
 export default class QueryBuilder {
-    constructor(modelClass) {
+    constructor (modelClass) {
         this.reset();
         this.modelClass = modelClass;
         this.emptyModel = new modelClass();
-        this.REST_CONFIG = modelClass.REST_CONFIG;
+        this.REST_CONFIG = modelClass.prototype.REST_CONFIG;
     }
 
-    reset() {
+    reset () {
         this.url = '';
         this.path = '';
         this.query = '';
@@ -39,36 +39,34 @@ export default class QueryBuilder {
      * @param id the if of the base resource (optional if a model instance is provided, mandatory in the other case)
      * @returns {QueryBuilder} this
      */
-    relationOf(modelInstance, id = null) {
+    relationOf (modelInstance, id = null) {
         if (modelInstance instanceof Model && !id) {
             id = modelInstance;
-        }
-        else if (typeof modelInstance === 'function') {
+        } else if (typeof modelInstance === 'function') {
             modelInstance = new modelInstance();
-        }
-        else {
-            throw new TypeError("model parameter should be a Model instance");
+        } else {
+            throw new TypeError('model parameter should be a Model instance');
         }
 
         const namespace = modelInstance.namespace;
 
         this.owner = {
             namespace,
-            id,
+            id
         };
 
         return this;
     }
 
-    ofModel(model) {
-        return this.relationOf(model)
+    ofModel (model) {
+        return this.relationOf(model);
     }
 
-    of(modelInstance, id = null) {
+    of (modelInstance, id = null) {
         return this.relationOf(modelInstance, id);
     }
 
-    with(...resourceName) {
+    with (...resourceName) {
         if (!this.relations[resourceName]) {
             this.relations.push(...resourceName);
         }
@@ -76,12 +74,12 @@ export default class QueryBuilder {
         return this;
     }
 
-    limit(limit, offset) {
+    limit (limit, offset) {
         this.limitRows = {limit, offset};
         return this;
     }
 
-    orderBy(...fields) {
+    orderBy (...fields) {
         for (const field of fields) {
             let direction = 'ASC';
             let column = field;
@@ -96,7 +94,7 @@ export default class QueryBuilder {
         return this;
     }
 
-    where(key, operator, value = null) {
+    where (key, operator, value = null) {
         if (_.isNull(value)) {
             value = operator;
             operator = '=';
@@ -107,32 +105,32 @@ export default class QueryBuilder {
         return this;
     }
 
-    select(...fields) {
+    select (...fields) {
         this.fields = fields;
         return this;
     }
 
-    distinct(bool = true) {
+    distinct (bool = true) {
         this.selectDistinct = bool;
         return this;
     }
 
-    from(date) {
+    from (date) {
         this.fromDate = date;
         return this;
     }
 
-    to(date) {
+    to (date) {
         this.toDate = date;
         return this;
     }
 
-    addCustomParameter(key, value) {
+    addCustomParameter (key, value) {
         this.customs.push({key, value});
         return this;
     }
 
-    buildUrl(namespace, id) {
+    buildUrl (namespace, id) {
         this._setPath(namespace, id);
 
         this._appendQuery();
@@ -140,32 +138,32 @@ export default class QueryBuilder {
         return this.path + this.query;
     }
 
-    _setPath(namespace, id) {
+    _setPath (namespace, id) {
         this.path = this.REST_CONFIG.base_url;
         this._appendOwner();
         this._appendNamespace(namespace, id);
     }
 
-    _appendOwner() {
+    _appendOwner () {
         if (this.owner && this.owner.model && this.owner.id) {
             this.path += `/${this.owner.model.namespace}/${this.owner.id}`;
         }
     }
 
-    _appendNamespace(namespace, id) {
+    _appendNamespace (namespace, id) {
         this.path += `/${namespace}`;
         if (id) {
             this.path += `/${id}`;
         }
     }
 
-    _appendDistinct() {
+    _appendDistinct () {
         if (this.selectDistinct) {
             this._append(`${this.REST_CONFIG.request_keywords.selectDistinct}=${this.selectDistinct}`);
         }
     }
 
-    _appendFromTo() {
+    _appendFromTo () {
         if (this.fromDate) {
             this._append(`${this.REST_CONFIG.request_keywords.from}=${this.fromDate}`);
         }
@@ -175,32 +173,32 @@ export default class QueryBuilder {
         }
     }
 
-    _appendWheres() {
+    _appendWheres () {
         for (const where of this.wheres) {
             this._append(`${this.REST_CONFIG.request_keywords.where}[]=${where.key},${where.operator},${where.value}`);
         }
     }
 
-    _appendIncludes() {
+    _appendIncludes () {
         if (this.relations.length) {
             this._append(`${this.REST_CONFIG.request_keywords.load_relations}=${this.relations.join(';')}`);
         }
     }
 
-    _appendFields() {
+    _appendFields () {
         if (this.fields.length) {
             this._append(`${this.REST_CONFIG.request_keywords.select_fields}=${this.fields.join(',')}`);
         }
     }
 
-    _appendSort() {
+    _appendSort () {
         if (this.sorts.length) {
             const fieldsArray = this.sorts.map(({column, direction}) => (direction === 'desc' ? '-' : '') + column);
             this._append(`${this.REST_CONFIG.request_keywords.order_by}=${fieldsArray.join(',')}`);
         }
     }
 
-    _appendLimit() {
+    _appendLimit () {
         if (this.limitRows) {
             const {limit, offset} = this.limitRows;
 
@@ -211,13 +209,13 @@ export default class QueryBuilder {
         }
     }
 
-    _appendCustoms() {
+    _appendCustoms () {
         for (const {key, value} of this.customs) {
             this._append(`${key}=${value}`);
         }
     }
 
-    _appendQuery() {
+    _appendQuery () {
         this._appendIncludes();
         this._appendLimit();
         this._appendSort();
@@ -232,7 +230,7 @@ export default class QueryBuilder {
         }
     }
 
-    _append(append) {
+    _append (append) {
         if (this.query.length) {
             append = `&${append}`;
         }
@@ -242,22 +240,21 @@ export default class QueryBuilder {
 
     // run query
 
-    _getUrlFunctionOfId(id) {
+    _getUrlFunctionOfId (id) {
         if (id) {
             return this.buildUrl(this.emptyModel.namespace, id);
         } else {
             const snakeCase = this.constructor.name
-                .replace(/([A-Z]+)/g, (x, y) => "_" + y.toLowerCase())
-                .replace(/^_/, "");
+                .replace(/([A-Z]+)/g, (x, y) => '_' + y.toLowerCase())
+                .replace(/^_/, '');
 
             return this.buildUrl(snakeCase);
         }
     }
 
-
-    async request(url, config) {
+    async request (url, config) {
         config.headers = {
-            "Content-Type": 'application/json',
+            'Content-Type': 'application/json'
         };
 
         if (this.REST_CONFIG.cross_origin) {
@@ -285,43 +282,40 @@ export default class QueryBuilder {
         return (await response.json());
     }
 
-
-    respond(json) {
+    respond (json) {
         json = this.emptyModel.computeJsonBeforeParsing(json);
         return ResponseHandler.ofJson(this.emptyModel, json);
     }
 
-    async find(id){
+    async find (id) {
         this.awaitType = QUERY_AWAIT_SINGLE;
 
         let url = this._getUrlFunctionOfId(id);
 
         let response = await this.request(url, {
-            method: this.REST_CONFIG.http_methods.get,
+            method: this.REST_CONFIG.http_methods.get
         });
 
         return this.respond(response.data);
     }
 
-
-    async all() {
+    async all () {
         const url = this.buildUrl(this.emptyModel.namespace);
         let response = await this.request(url, {
-            method: this.REST_CONFIG.http_methods.get,
+            method: this.REST_CONFIG.http_methods.get
         });
 
         return this.respond(response.data);
     }
 
-    async paginate(perPage = 10, page = 1) {
+    async paginate (perPage = 10, page = 1) {
         this.limit(perPage, page * perPage - perPage);
 
         const url = this.buildUrl(this.emptyModel.namespace);
         let response = await this.request(url, {
-            method: this.REST_CONFIG.http_methods.get,
+            method: this.REST_CONFIG.http_methods.get
         });
 
         return this.respond(response.data);
     }
 }
-
