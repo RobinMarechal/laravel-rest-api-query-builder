@@ -1,3 +1,4 @@
+
 # laravel-rest-api-query-builder
 
 [![npm version](https://badge.fury.io/js/sarala.svg)](https://www.npmjs.com/package/sarala) [![apm](https://img.shields.io/apm/l/vim-mode.svg)](https://github.com/milroyfraser/sarala/blob/master/LICENSE)
@@ -28,24 +29,23 @@ $ yarn add laravel-rest-api-query-builder
 ##### app/models/BaseModel.js
 ```javascript
 import { Model } from 'laravel-rest-api-query-builder';
-import axios from 'axios';
 
 export default class BaseModel extends Model
 {
-    request (config) {
-        return axios.request(config);
+    getBaseUrl(){
+        return "https://myserver.com/api";
     }
 }
 ```
 
-##### app/models/Customer.jsr.js
+##### app/models/Post.js
 ```javascript
 import Model from './BaseModel';
 import Comment from './Comment';
 import Tag from './Tag';
-import Order from './Order';
+import User from './User';
 
-export default class Customer extends Model {
+export default class Post extends Model {
     getNamespace () {
         return 'posts';
     }
@@ -55,14 +55,27 @@ export default class Customer extends Model {
     }
 
     getDates () {
-        return ['published_at'];
+	// one of 'datetime', 'date' and 'time'
+        return { 
+	    created_at: 'datetime',
+	    updated_at: 'datetime'
+        };
     }
 
     getRelations () {
         return {
-            author: new Order(),
-            comments: new Comment(),
-            tags: new Tag()
+            author: {
+	        class: User,
+	        list: false
+            },
+            tags: {
+	        class: Tag,
+	        list: true
+            },
+            comments: {
+                class: Comment,
+                list: true
+	    },
         };
     }
 
@@ -83,6 +96,7 @@ export default class Customer extends Model {
 ##### app/models/Tag.js
 ```javascript
 import Model from './BaseModel';
+import Post from './Post';
 
 export default class Tag extends Model {
     getNamespace () {
@@ -92,30 +106,58 @@ export default class Tag extends Model {
     getFields () {
         return ['name'];
     }
+    
+    getRelations(){
+	return {
+	    posts: {
+		class: Post,
+		list: true
+	    }
+	}
+    }
 }
 ```
 
 ## Fetching data
 
 ```javascript
-import Customer from Customer;
+import Customer from './Customer';
+import Post from './Post';
+import Query from 'laravel-rest-api-query-builder'
 
-coCustomerpost = new Post();
+// Get the post with id 7
+Query.model(Post)
+    .find(7)
+    .then(post => console.log(post));
 
-/Customerkes a GET request to https://sarala-demo.app/api/posts/{id}
-const findPost = async (id) => {
-    let post = await post.find(id);
-};
+// Get all posts
+Query.model(Post)
+    .all()
+    .then(posts => console.log(posts));
 
-// makes a GET request to https://sarala-demo.app/api/posts
-const fetchAllPosts = async () => {
-    let posts = await post.all();
-};
+// Get all posts with their author and tags
+Query.model(Post)
+    .with('author', 'tags')
+    .all()
+    .then(posts => console.log(posts));
 
-// makes a GET request to https://sarala-demo.app/api/posts/?page[size]=10&page[number]={page}
-const paginatePosts = async (page) => {
-    let posts = await post.paginate(10, page);
-};
+// Get, sort and limit
+Query.model(Post)
+    .orderBy('-id', 'title')
+    .limit(10)
+    .all()
+    .then(posts => console.log(posts));
+
+// Paginate : 10 per page, 5th page
+Query.model(Post)
+    .paginate(10, 5)
+    .then(posts => console.log(posts));
+
+// Get a post then get its author
+Query.model(Post)
+    .find(7)
+    .then(post => Query.model(User).of(post).all())
+    .then(users => console.log(users[0]));
 ```
 
 ## Insert
@@ -128,8 +170,22 @@ const tag = new Tag();
 tag.name = 'json-api';
 
 // makes a POST request to https://sarala-demo.app/api/tags
-tag.save(); 
-// or you can directly call tag.create();
+tag.create()
+    .then(tag => {
+        tag.name = 'json-api-2';
+        return tag.update();
+    })
+    .then(console.log); 
+
+// save() can replace both create() and update().
+const tag2 = new Tag();
+tag2.name = 'tag2';
+tag2.save()
+    .then(tag => {
+        tag.name = 'tag2-3';
+        return tag.save();
+    })
+    .then(console.log); 
 ```
 
 ## Learn More: [Original package's documentation](https://milroy.me/posts/sarala-laravel-eloquent-like-javascript-orm-to-communicate-with-json-api/1)
