@@ -5,7 +5,7 @@ import Query from './Query';
 
 export default class Model {
     constructor () {
-        this.selfValidate();
+        this._selfValidate();
         this.type = this.getNamespace();
 
         this.owner = null;
@@ -14,36 +14,110 @@ export default class Model {
         this.relations = this.getRelations();
         this.dates = this.getDates();
         this.namespace = this.getNamespace();
+
+        Model.prototype.REST_CONFIG = this.overrideConfig(REST_CONFIG);
+    }
+
+    /**
+     * Override some REST configs
+     * @param config default configs
+     * @returns {object} updated config
+     */
+    overrideConfig (config) {
+        return config;
     }
 
     // override
 
+    /**
+     * get API Base URL
+     * @returns {string} the api base URL. eg 'https://myapi.com/api'
+     */
     getBaseUrl () {
         throw UnimplementedException('Method getBaseUrl() must be implemented.');
     }
 
+    /**
+     * Get the list a fields (excluding dates, times, datetimes and relations)
+     * @returns {array<string>}the list of fields
+     */
     getFields () {
         throw UnimplementedException('Method getFields() must be implemented.');
     }
 
+    /**
+     * Get the API namespace for this class. eg 'users' to call 'http://myserver.com/api/users'
+     * @return {string} the API namespace related to this class
+     */
     getNamespace () {
         throw UnimplementedException('Method getNamespace() must be implemented.');
     }
 
+    /**
+     * The date fields and their type : 'time', 'date', 'datetime'
+     * Format:
+     * ```
+     * {
+     *     <fieldName>: <datetime|date|time>
+     * }
+     * ```
+     *
+     * Example:
+     * ```
+     * {
+     *     created_at: 'datetime',
+     *     startingDay : 'date',
+     *     startingTime: 'time'
+     * }
+     * ```
+     * @returns {{}} the date|time|datetime fields
+     */
     getDates () {
         return {};
     }
 
+    /**
+     * Get the relation list and some properties. A relation with type 'list' will be transform into a list,
+     *      otherwise a simple instance of the relations class.
+     * Format:
+     * ```
+     * {
+     *     <RelationName>: {
+     *         class: <RelatedClass>,
+     *         list: <true|false (default)>
+     *     }
+     * }
+     * ```
+     *
+     * Example:
+     * ```
+     * {
+     *     posts: {
+     *         class: Post,
+     *         list: true
+     *     },
+     *     country: {
+     *         class: Country,
+     *         list: false
+     *     }
+     * }
+     * ```
+     * @returns {{}} The list of relations with some properties
+     */
     getRelations () {
         return {};
     }
 
+    /**
+     * Process this model after a fetch from the server
+     * @returns {{}}
+     */
     computed () {
         return {};
     }
 
     /**
-     * Make changes or use fetch config before the request
+     * Make changes on this model's data or use fetch config before the request
      * @param fetchConfig the config
      * @returns the changed fetch config
      */
@@ -60,7 +134,7 @@ export default class Model {
         return fetchResponse;
     }
 
-    toJson () {
+    _toJson () {
         const json = {};
 
         const fields = this.getFields();
@@ -79,9 +153,9 @@ export default class Model {
                 }
             } else if (relationsName.includes(prop)) {
                 if (relations[prop].list) {
-                    json[prop] = this[prop].map((one) => one.toJson());
+                    json[prop] = this[prop].map((one) => one._toJson());
                 } else {
-                    json[prop] = this[prop].toJson();
+                    json[prop] = this[prop]._toJson();
                 }
             }
         }
@@ -94,8 +168,8 @@ export default class Model {
      * @param {string} relation the relation to load and to retrieve
      * @returns {Promise<*>} the loaded relation
      */
-    async forceLazyLoadAndGet (relation) {
-        await this.forceLazyLoad(relation);
+    async _forceLazyLoadAndGet (relation) {
+        await this._forceLazyLoad(relation);
         return this[relation];
     }
 
@@ -104,33 +178,33 @@ export default class Model {
      * @param {string} relation the relation to load and to retrieve
      * @returns {Promise<*>} the loaded relation
      */
-    async lazyLoadAndGet (relation) {
-        await this.lazyLoad(relation);
+    async _lazyLoadAndGet (relation) {
+        await this._lazyLoad(relation);
         return this[relation];
     }
 
     /**
      * Lazy loads relations to the model.
      * Does not load already loaded relations.
-     * To force the load, use Model#forceLazyLoad() method
+     * To force the load, use Model#_forceLazyLoad() method
      *
      * @param {...string} relations a list of relations to load. The function doesn't reload an already loaded relation.
      * @returns {Promise<*>} formatted loaded relation if single, otherwise returns this.
      */
-    async lazyLoad (...relations) {
-        relations = this.filterLoadedRelations(...relations);
-        return this.forceLazyLoad(...relations);
+    async _lazyLoad (...relations) {
+        relations = this._filterLoadedRelations(...relations);
+        return this._forceLazyLoad(...relations);
     }
 
     /**
      * Lazy loads relations to the model.
      * This function FORCE all relations to be loaded, even the already loaded ones.
-     * To avoid the force reload, use Model#lazyLoad() method
+     * To avoid the force reload, use Model#_lazyLoad() method
      *
      * @param {...string} relations a list of relations to load.
      * @returns {Promise<*>} this.
      */
-    async forceLazyLoad (...relations) {
+    async _forceLazyLoad (...relations) {
         if (relations.length > 0) {
             try {
                 const newThis = await Query.model(this).with(...relations).find(this.id);
@@ -155,7 +229,7 @@ export default class Model {
      * @param {string} relations the model's relations
      * @returns {array} the filtered relations (that haven't been loaded yet)
      */
-    filterLoadedRelations (...relations) {
+    _filterLoadedRelations (...relations) {
         const arr = [];
         for (const r of relations) {
             if (!this.relations[r].loaded) {
@@ -168,40 +242,40 @@ export default class Model {
 
     // requests
 
-    async save () {
+    async _save () {
         this.queryBuilder.awaitType = QUERY_AWAIT_SINGLE;
         if (this.hasOwnProperty('id')) {
-            return this.update();
+            return this._update();
         }
 
-        return this.create();
+        return this._create();
     }
 
-    async create () {
+    async _create () {
         this.queryBuilder.awaitType = QUERY_AWAIT_SINGLE;
 
         const url = this.queryBuilder.buildUrl(this.namespace);
         let response = await this.request(url, {
             method: this.REST_CONFIG.http_methods.create,
-            body: JSON.stringify(this.toJson())
+            body: JSON.stringify(this._toJson())
         });
 
         return this.respond(response.data);
     }
 
-    async update () {
+    async _update () {
         this.queryBuilder.awaitType = QUERY_AWAIT_SINGLE;
 
         const url = this.queryBuilder.buildUrl(this.namespace, this.id);
         let response = await this.request(url, {
             method: this.REST_CONFIG.http_methods.update,
-            body: JSON.stringify(this.toJson())
+            body: JSON.stringify(this._toJson())
         });
 
         return this.respond(response.data);
     }
 
-    async delete () {
+    async _delete () {
         this.queryBuilder.awaitType = QUERY_AWAIT_SINGLE;
 
         const url = this.queryBuilder.buildUrl(this.namespace, this.id);
@@ -212,7 +286,7 @@ export default class Model {
         return this.respond(response.data);
     }
 
-    async attach (model, body = null, sync = false) {
+    async _attach (model, body = null, sync = false) {
         this.queryBuilder.awaitType = QUERY_AWAIT_SINGLE;
 
         this.relationOfModel(this);
@@ -230,15 +304,15 @@ export default class Model {
         return this.respond(response.data);
     }
 
-    async sync (model, data, detaching = true) {
+    async _sync (model, data, detaching = true) {
         this.queryBuilder.awaitType = QUERY_AWAIT_SINGLE;
         if (!detaching) {
             this.queryBuilder.addCustomParameter(this.REST_CONFIG.request_keywords.sync_detaching, detaching);
         }
-        return this.attach(model, data, true);
+        return this._attach(model, data, true);
     }
 
-    async detach (model) {
+    async _detach (model) {
         this.queryBuilder.awaitType = QUERY_AWAIT_SINGLE;
 
         this.relationOfModel(this);
@@ -264,7 +338,7 @@ export default class Model {
 
     // lib
 
-    selfValidate () {
+    _selfValidate () {
         const name = this.getNamespace();
 
         if (!name || !_.isString(name) || name.length === 0) {
@@ -274,7 +348,7 @@ export default class Model {
     }
 }
 
-Model.prototype.REST_CONFIG = {
+const REST_CONFIG = {
     default_temporal_field: 'created_at',
 
     cross_origin: false,
