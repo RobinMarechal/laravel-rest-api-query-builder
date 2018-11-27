@@ -9,7 +9,8 @@
     "tw": "jest --watch",
     "cc": "jest --coverage",
     "cs": "./node_modules/.bin/eslint src/*",
-    "csf": "./node_modules/.bin/eslint src/* --fix"
+    "csf": "./node_modules/.bin/eslint src/* --fix",
+    "babel-version": "babel --version"
   },
   "jest": {
     "coverageDirectory": "./coverage/",

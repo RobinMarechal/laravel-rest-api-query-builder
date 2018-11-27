@@ -177,7 +177,7 @@ tag.create()
     })
     .then(console.log); 
 
-_save
+# save
 const tag2 = new Tag();
 tag2.name = 'tag2';
 tag2.save()
