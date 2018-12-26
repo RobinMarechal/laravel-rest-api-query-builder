@@ -40,12 +40,12 @@ export default class BaseModel extends Model
 
 ##### app/models/Post.js
 ```javascript
-import Model from './BaseModel';
+import BaseModel from './BaseModel';
 import Comment from './Comment';
 import Tag from './Tag';
 import User from './User';
 
-export default class Post extends Model {
+export default class Post extends BaseModel {
     getNamespace () {
         return 'posts';
     }
