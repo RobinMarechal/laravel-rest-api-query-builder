@@ -28,7 +28,7 @@ $ yarn add laravel-rest-api-query-builder
 
 ##### app/models/BaseModel.js
 ```javascript
-import { Model } from 'laravel-rest-api-query-builder';
+import Model from 'laravel-rest-api-query-builder';
 
 export default class BaseModel extends Model
 {
