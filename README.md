@@ -123,7 +123,7 @@ export default class Tag extends Model {
 ```javascript
 import Customer from './Customer';
 import Post from './Post';
-import Query from 'laravel-rest-api-query-builder'
+import { Query } from 'laravel-rest-api-query-builder'
 
 // Get the post with id 7
 Query.model(Post)
